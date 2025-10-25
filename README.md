@@ -64,7 +64,7 @@ Joc 3D de escalada cu sistem de physics-based climbing. Character controller cus
 1. Cloneaza repo-ul:
 
    ```bash
-   git clone [URL_REPOSITORY]
+   git clone https://github.com/dobri1408/ProiectUnity2025
    ```
 
 2. Deschide in Unity Hub (Unity 2022.3 LTS)
