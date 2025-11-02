@@ -18,11 +18,15 @@ public class Hand : MonoBehaviour
 
     void FixedUpdate()
     {
-        
         if (isAnchored && Input.GetMouseButton(0))
+        {
             rb.linearVelocity = Vector3.zero;
-        else {
+            gameObject.GetComponent<Renderer>().material.color = Color.red;
+        }
+        else
+        {
             isAnchored = false;
+            gameObject.GetComponent<Renderer>().material.color = Color.white;
         }   
         
     }
