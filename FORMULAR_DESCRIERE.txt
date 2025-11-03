@@ -1,0 +1,143 @@
+========================================
+FORMULAR CENTRALIZATOR ECHIPA - ASCENT
+========================================
+
+-------------------
+ID ECHIPA
+-------------------
+[Completati cu ID-ul echipei]
+
+
+-------------------
+NUME - PRENUME TEAM LEADER
+-------------------
+[Nume Prenume]
+
+
+-------------------
+NUME - PRENUME SENIOR CODER
+-------------------
+[Nume Prenume]
+
+
+-------------------
+RESTUL ECHIPEI (separare cu ;)
+-------------------
+[Nume Prenume; Nume Prenume; Nume Prenume]
+
+
+-------------------
+TIPUL JOCULUI
+-------------------
+3D
+3rd Person
+Level Based
+Adventure
+Single-player
+Platformer
+Physics
+
+
+-------------------
+DESCRIEREA JOCULUI (descriere tehnica)
+-------------------
+ASCENT este un joc 3D single-player de tip adventure/platformer cu focus pe mecanici de escalada realista si survival. Jocul combina elemente de physics-based movement cu resource management.
+
+SISTEME PRINCIPALE:
+
+1. CHARACTER CONTROLLER CUSTOM
+- Detectie de suprafete urcabile prin raycast system
+- Grip points pentru pozitionarea mainilor/picioarelor
+- Fizica bazata pe rigidbody pentru miscare realistica
+- Inverse Kinematics pentru animatii naturale
+
+2. STAMINA SYSTEM
+- Consum de energie la escalada, alergare, saritura
+- Regenerare graduala in repaus
+- Afectat de greutatea echipamentului si damage
+- Visual feedback prin UI bar
+
+3. PHYSICS-BASED CLIMBING
+- Raycast detection pentru grip points
+- Collision detection pentru prevenirea clipping-ului
+- Force-based movement pentru momentum realistic
+- Click & hold pentru prindere, WASD pentru directie, Space pentru jump
+
+4. LEVEL DESIGN
+- 4 biome cu dificultate crescatoare: Forest Base, Rocky Cliffs, Snowy Peaks, Summit Zone
+- Generare procedurala bazata pe Perlin noise
+- Seed-based generation pentru consistency
+- Placement logic pentru items si obstacole
+
+5. INVENTORY SYSTEM
+- Grid-based inventory (4x6 slots)
+- Categorii: consumabile, echipament, tools, collectibles
+- Sistem de crafting basic pentru upgrade-uri
+- Repair system pentru echipament uzat
+
+6. AI & OBSTACLES
+- Roci cazatoare cu trigger zones
+- Platforme mobile cu waypoint system
+- Conditii meteo dinamice (vant, zapada)
+- Wildlife ambient pentru atmosfera
+
+7. VISUAL EFFECTS
+- Shader-uri custom: wind pentru vegetatie, snow accumulation, weathering pe stanci
+- Particle systems: praf la escalada, efecte meteo, breathe effects
+- LOD system pentru optimizare
+- Baked lighting si occlusion culling
+
+8. AUDIO SYSTEM
+- Audio mixer cu multiple channels
+- 3D spatial audio pentru ambient
+- Footstep system cu multiple surfaces
+- Dynamic music adaptive la tensiune/altitudine
+
+9. SAVE SYSTEM
+- JSON serialization pentru save data
+- Auto-save la checkpoints
+- Multiple save slots
+- Salvare progress, inventory, statistics, settings
+
+10. UI/UX
+- Minimal HUD: stamina bar, health, quick items
+- Pause menu cu optiuni complete
+- Inventory screen cu drag & drop
+- Achievement notifications
+- Rebindable controls si accessibility options
+
+OPTIMIZARE PERFORMANCE:
+- LOD pentru modele 3D
+- Occlusion culling si texture streaming
+- Object pooling pentru particles
+- Collision layers optimizate
+- Asset bundling si texture compression
+
+TEHNOLOGII:
+- Unity 2022.3 LTS
+- C# .NET Standard 2.1
+- Unity Physics Engine
+- Unity Animator & Timeline
+- Git pentru version control
+
+
+-------------------
+TITLURI JOCURI ASEMANATOARE
+-------------------
+PEAK - Climbing mechanics
+Getting Over It - Precision platforming
+Celeste - Challenging climbing gameplay
+A Difficult Game About Climbing - Physics-based climbing
+Climb - VR climbing mechanics
+
+
+-------------------
+LINK REPO (public)
+-------------------
+[Adaugati link-ul catre repository-ul GitHub]
+
+
+-------------------
+ALTELE (optional)
+-------------------
+Jocul va include sistem de achievements, multiple difficulty settings, si focus pe replayability prin time trials si speedrun challenges. Accent pe physics realistic si provocare crescatoare.
