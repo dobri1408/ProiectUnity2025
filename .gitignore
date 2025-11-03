@@ -99,6 +99,3 @@ InitTestScene*.unity*
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 
 .vscode/
-
-Assets/Textures/Gravel/ground_0020_normal_directx_4k.png
-Assets/Textures/Gravel/ground_0020_normal_opengl_4k.png
