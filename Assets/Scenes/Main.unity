@@ -324,8 +324,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55c0076efb2cb8048a44fd94e8639f78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Main
-  level: {fileID: 1011560628736521886, guid: 5efc6585154b7314fa3bb74acb461aac, type: 3}
-  player: {fileID: 6987436177309291237, guid: a59e0b2bcec671446808543ce0913ed7, type: 3}
 --- !u!4 &1897990773
 Transform:
   m_ObjectHideFlags: 0
