@@ -20,19 +20,11 @@
 
 ---
 
-## Echipa
-
-| Rol | Nume | Email |
-| --- | ---- | ----- |
-
----
-
 ## Detalii Proiect
 
 ### Tipul Jocului
 
 - 3D
-- 3rd Person
 - Level Based
 - Adventure
 - Single-player
@@ -44,8 +36,6 @@ Joc 3D de escalada cu sistem de physics-based climbing. Character controller cus
 **Features implementate:**
 
 - Character controller pentru climbing
-- Sistem de inventar
-- AI pentru obstacole dinamice
 - Shader-uri pentru efecte de mediu
 - Achievement system
 - Save/Load system
@@ -61,16 +51,20 @@ Joc 3D de escalada cu sistem de physics-based climbing. Character controller cus
 
 ## Instalare
 
-1. Cloneaza repo-ul:
+Cloneaza repo-ul:
 
    ```bash
    git clone https://github.com/dobri1408/ProiectUnity2025
    ```
 
-2. Deschide in Unity Hub (Unity 2022.3 LTS)
+Deschide in Unity Hub (Unity 6.2)
 
-3. Deschide scena `Assets/Scenes/MainMenu.unity`
+Deschide scena `Assets/Scenes/Main.unity` (Poate dura pana se incarca materialele)
 
-4. Apasa Play
+Controalele sunt:
+
+-WASD Miscare orizontala.
+
+-LeftClick pentru apucarea de pereti (Climbing) 
 
 ---
