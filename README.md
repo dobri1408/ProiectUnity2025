@@ -68,3 +68,5 @@ Controalele sunt:
 -LeftClick pentru apucarea de pereti (Climbing) 
 
 ---
+
+**Review** catre serbanandrei1338@gmail.com sau teams andrei.serban7@s.unibuc.ro
