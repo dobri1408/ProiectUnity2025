@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
     public Rigidbody hand;
     public float handSpeed = 5f;
     public float handDist = 2f;
+    public float maxHandDist = 3f;
     public float handDamp = 0.2f;
 
     private Rigidbody handRB;
@@ -75,19 +76,26 @@ public class Player : MonoBehaviour
         rb.linearVelocity *= moveDampPerc;
     }
 
-    void HandleHand()
-    {
-        if (!handObj.isAnchored)
+        void HandleHand()
         {
-            Vector3 handPos = transform.position + camTransform.forward * handDist;
-            Vector3 target = handPos - hand.transform.position;
-            hand.linearVelocity = Vector3.Lerp(hand.linearVelocity, target * 10, handDamp);
+            if (!handObj.isAnchored)
+            {
+                Vector3 handPos = transform.position + camTransform.forward * handDist;
+                Vector3 target = handPos - hand.transform.position;
+                hand.linearVelocity = Vector3.Lerp(hand.linearVelocity, target * 10, handDamp);
+            }
+            else //otherwise move player
+            {
+                Vector3 playerPos = hand.transform.position + camTransform.forward * -handDist;
+                Vector3 target = playerPos - transform.position;
+                rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, target * 10, handDamp);
+            }
+
+            float dist = Vector3.Distance(hand.transform.position, transform.position);
+            if (dist > maxHandDist)
+            {
+                hand.transform.position = transform.position;
+                hand.linearVelocity = Vector3.zero;
+            }
         }
-        else //otherwise move player
-        {
-            Vector3 playerPos = hand.transform.position + camTransform.forward * -handDist;
-            Vector3 target = playerPos - transform.position;
-            rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, target * 10, handDamp);
-        }
-    }
 }
