@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
 
     [Header("Camera Settings")]
     private Transform camTransform;
-    public float mouseSens = 250f;
+    public float mouseSens = 300f;
     private float camX;
 
     [Header("Hand Settings")]
