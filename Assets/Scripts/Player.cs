@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -5,16 +6,18 @@ public class Player : MonoBehaviour
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
     public float moveDampPerc = 0.98f;
+    public float maxSpeed = 5f;
 
     [Header("Camera Settings")]
     private Transform camTransform;
-    public float mouseSens = 250f;
+    public float mouseSens = 300f;
     private float camX;
 
     [Header("Hand Settings")]
     public Rigidbody hand;
     public float handSpeed = 5f;
     public float handDist = 2f;
+    public float maxHandDist = 3f;
     public float handDamp = 0.2f;
 
     private Rigidbody handRB;
@@ -59,31 +62,40 @@ public class Player : MonoBehaviour
     {
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
-        if (handObj.isAnchored)
+
+        if (handObj.isAnchored || (rb.linearVelocity.magnitude >= maxSpeed))
         {
             h = 0;
             v = 0;
         }
 
-        Vector3 target = (transform.forward * v + transform.right * h).normalized * moveSpeed;
+        Vector3 moveDir = transform.forward * v + transform.right * h;
+        Vector3 force = moveDir * moveSpeed;
 
-        rb.AddForce(target);
-        rb.linearVelocity = rb.linearVelocity * moveDampPerc;
+        rb.AddForce(force);
+        rb.linearVelocity *= moveDampPerc;
     }
 
-    void HandleHand()
-    {
-        if (!handObj.isAnchored)
+        void HandleHand()
         {
-            Vector3 handPos = transform.position + camTransform.forward * handDist;
-            Vector3 target = handPos - hand.transform.position;
-            hand.linearVelocity = Vector3.Lerp(hand.linearVelocity, target * 10, handDamp);
+            if (!handObj.isAnchored)
+            {
+                Vector3 handPos = transform.position + camTransform.forward * handDist;
+                Vector3 target = handPos - hand.transform.position;
+                hand.linearVelocity = Vector3.Lerp(hand.linearVelocity, target * 10, handDamp);
+            }
+            else //otherwise move player
+            {
+                Vector3 playerPos = hand.transform.position + camTransform.forward * -handDist;
+                Vector3 target = playerPos - transform.position;
+                rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, target * 10, handDamp);
+            }
+
+            float dist = Vector3.Distance(hand.transform.position, transform.position);
+            if (dist > maxHandDist)
+            {
+                hand.transform.position = transform.position;
+                hand.linearVelocity = Vector3.zero;
+            }
         }
-        else //otherwise move player
-        {
-            Vector3 playerPos = hand.transform.position + camTransform.forward * -handDist;
-            Vector3 target = playerPos - transform.position;
-            rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, target * 10, handDamp);
-        }
-    }
 }

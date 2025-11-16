@@ -480,7 +480,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   moveSpeed: 25
   moveDampPerc: 0.98
-  mouseSens: 250
+  maxSpeed: 5
+  mouseSens: 300
   hand: {fileID: 5467078436733260055}
   handSpeed: 10
   handDist: 2
