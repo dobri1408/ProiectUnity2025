@@ -20,9 +20,24 @@ public class Player : MonoBehaviour
     public float maxHandDist = 3f;
     public float handDamp = 0.2f;
 
+    [Header("Audio Settings")]
+    public AudioClip windSound;
+    public AudioClip footstepsSound;
+    public float maxWindVolume = 1.0f;
+    public float windVelocityThreshold = 0.3f;
+    public float maxWindVelocity = 6f;
+    public float groundCheckDistance = 0.6f;
+    public float groundCheckRadius = 0.3f;
+    public LayerMask groundLayer;
+    public float footstepVolume = 0.9f;
+
     private Rigidbody handRB;
     private Hand handObj;
     private Rigidbody rb;
+    private AudioSource windAudioSource;
+    private AudioSource footstepsAudioSource;
+    private bool isGrounded;
+    private float footstepTimer;
 
     void Start()
     {
@@ -34,17 +49,76 @@ public class Player : MonoBehaviour
 
         camTransform = GetComponentInChildren<Camera>().transform;
         handObj = hand.GetComponent<Hand>();
+
+        // Setup audio sources
+        windAudioSource = gameObject.AddComponent<AudioSource>();
+        windAudioSource.clip = windSound;
+        windAudioSource.loop = true;
+        windAudioSource.volume = 0f;
+        windAudioSource.playOnAwake = false;
+        windAudioSource.spatialBlend = 0f; // 2D sound
+
+        footstepsAudioSource = gameObject.AddComponent<AudioSource>();
+        footstepsAudioSource.clip = footstepsSound;
+        footstepsAudioSource.loop = true;
+        footstepsAudioSource.volume = 0f;
+        footstepsAudioSource.playOnAwake = false;
+        footstepsAudioSource.spatialBlend = 0f; // 2D sound
+
+        // Verifică dacă clipurile audio sunt setate
+        if (windSound != null)
+        {
+            windAudioSource.Play();
+            Debug.Log("Wind audio started");
+        }
+        else
+        {
+            Debug.LogWarning("Wind sound clip not assigned!");
+        }
+
+        if (footstepsSound != null)
+        {
+            footstepsAudioSource.Play();
+            Debug.Log("Footsteps audio started");
+        }
+        else
+        {
+            Debug.LogWarning("Footsteps sound clip not assigned!");
+        }
     }
 
     void Update()
     {
         HandleMouse();
+        HandleAudio();
     }
 
     void FixedUpdate()
     {
+        CheckGrounded();
         HandleMovement();
         HandleHand();
+    }
+
+    void CheckGrounded()
+    {
+        // Use SphereCast for more reliable ground detection
+        RaycastHit hit;
+        Vector3 spherePosition = transform.position;
+
+        // Check with raycast first
+        bool rayHit = Physics.Raycast(spherePosition, Vector3.down, out hit, groundCheckDistance);
+
+        // Also check with sphere cast for better detection
+        bool sphereHit = Physics.SphereCast(spherePosition, groundCheckRadius, Vector3.down, out hit, groundCheckDistance);
+
+        isGrounded = rayHit || sphereHit;
+
+        // Additional check: if vertical velocity is very small and we're close to something below
+        if (!isGrounded && Mathf.Abs(rb.linearVelocity.y) < 0.5f)
+        {
+            isGrounded = Physics.Raycast(spherePosition, Vector3.down, groundCheckDistance * 1.5f);
+        }
     }
 
     void HandleMouse()
@@ -98,4 +172,59 @@ public class Player : MonoBehaviour
                 hand.linearVelocity = Vector3.zero;
             }
         }
+
+    void HandleAudio()
+    {
+        if (windAudioSource == null || footstepsAudioSource == null) return;
+
+        float currentSpeed = rb.linearVelocity.magnitude;
+        float horizontalSpeed = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z).magnitude;
+        float verticalSpeed = Mathf.Abs(rb.linearVelocity.y);
+
+        // Wind sound - se aude când ești în aer SAU când ai viteză verticală mare (săritura)
+        bool shouldPlayWind = (!isGrounded || verticalSpeed > 0.5f) && currentSpeed > windVelocityThreshold;
+
+        if (shouldPlayWind)
+        {
+            if (!windAudioSource.isPlaying && windSound != null)
+            {
+                windAudioSource.Play();
+            }
+
+            // Calculează volumul bazat pe viteză - volum minim mai mare pentru a se auzi mereu
+            float velocityRatio = Mathf.Clamp01((currentSpeed - windVelocityThreshold) / (maxWindVelocity - windVelocityThreshold));
+            // Volum între 0.3 și maxWindVolume pentru a se auzi mai bine
+            float targetVolume = Mathf.Lerp(0.3f, maxWindVolume, velocityRatio);
+
+            // Fade in foarte rapid pentru răspuns instant
+            windAudioSource.volume = Mathf.Lerp(windAudioSource.volume, targetVolume, Time.deltaTime * 20f);
+        }
+        else
+        {
+            // Fade out rapid când aterizezi
+            windAudioSource.volume = Mathf.Lerp(windAudioSource.volume, 0f, Time.deltaTime * 12f);
+        }
+
+        // Footsteps sound - doar când ești pe pământ și te miști orizontal (fără viteză verticală mare)
+        bool shouldPlayFootsteps = isGrounded && horizontalSpeed > 0.05f && verticalSpeed < 0.5f;
+
+        if (shouldPlayFootsteps)
+        {
+            if (!footstepsAudioSource.isPlaying && footstepsSound != null)
+            {
+                footstepsAudioSource.Play();
+            }
+
+            // Volume based on horizontal speed - volum minim mai mare
+            float speedRatio = Mathf.Clamp01(horizontalSpeed / maxSpeed);
+            // Volum între 0.4 și footstepVolume pentru a se auzi mereu când mergi
+            float targetFootstepVolume = Mathf.Lerp(0.4f, footstepVolume, speedRatio);
+            footstepsAudioSource.volume = Mathf.Lerp(footstepsAudioSource.volume, targetFootstepVolume, Time.deltaTime * 15f);
+        }
+        else
+        {
+            // Fade out rapid când te oprești sau sari
+            footstepsAudioSource.volume = Mathf.Lerp(footstepsAudioSource.volume, 0f, Time.deltaTime * 18f);
+        }
+    }
 }

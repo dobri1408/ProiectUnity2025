@@ -485,4 +485,16 @@ MonoBehaviour:
   hand: {fileID: 5467078436733260055}
   handSpeed: 10
   handDist: 2
+  maxHandDist: 3
   handDamp: 100
+  windSound: {fileID: 8300000, guid: 61bccf4232f1644c1bca29571cd9f770, type: 3}
+  footstepsSound: {fileID: 8300000, guid: 7dfe0697d76254b2088be8d0e3e346fc, type: 3}
+  maxWindVolume: 0.8
+  windVelocityThreshold: 2
+  maxWindVelocity: 10
+  groundCheckDistance: 1.1
+  groundCheckRadius: 0.3
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  footstepVolume: 0.5
