@@ -6,7 +6,7 @@ public class Main : MonoBehaviour
 
     void Start()
     {
-        GameObject level = Resources.Load<GameObject>("Level");
+        GameObject level = Resources.Load<GameObject>("Tutorial");
         currentLevel = Instantiate(level, Vector3.zero, Quaternion.identity);
 
         GameObject player = Resources.Load<GameObject>("Player");
