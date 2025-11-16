@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -5,6 +6,7 @@ public class Player : MonoBehaviour
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
     public float moveDampPerc = 0.98f;
+    public float maxSpeed = 5f;
 
     [Header("Camera Settings")]
     private Transform camTransform;
@@ -59,16 +61,18 @@ public class Player : MonoBehaviour
     {
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
-        if (handObj.isAnchored)
+
+        if (handObj.isAnchored || (rb.linearVelocity.magnitude >= maxSpeed))
         {
             h = 0;
             v = 0;
         }
 
-        Vector3 target = (transform.forward * v + transform.right * h).normalized * moveSpeed;
+        Vector3 moveDir = transform.forward * v + transform.right * h;
+        Vector3 force = moveDir * moveSpeed;
 
-        rb.AddForce(target);
-        rb.linearVelocity = rb.linearVelocity * moveDampPerc;
+        rb.AddForce(force);
+        rb.linearVelocity *= moveDampPerc;
     }
 
     void HandleHand()
