@@ -11,6 +11,9 @@ public class Main : MonoBehaviour
 
         GameObject player = Resources.Load<GameObject>("Player");
         Instantiate(player, new Vector3(0, 1, 0), Quaternion.identity);
+
+        GameObject ui = Resources.Load<GameObject>("UI");
+        Instantiate(ui, new Vector3(0, 0, 0), Quaternion.identity);
     }
 
     void Update()
