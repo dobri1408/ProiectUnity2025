@@ -5,6 +5,7 @@ public class Player : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
+    public float airMoveSpeedMultiplier = 0.25f;
     public float linearDamp = 0.98f;
     public float maxSpeed = 5f;
 
@@ -137,23 +138,31 @@ public class Player : MonoBehaviour
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
-        if (handObj.isAnchored || (rb.linearVelocity.magnitude >= maxSpeed))
+        Vector3 moveDir = transform.forward * v + transform.right * h;
+
+        // Only check max speed along the move direction
+        if (handObj.isAnchored || (moveDir.sqrMagnitude > 0f && Vector3.Dot(rb.linearVelocity, moveDir.normalized) >= maxSpeed))
         {
             h = 0;
             v = 0;
+            moveDir = Vector3.zero;
         }
 
-        Vector3 moveDir = transform.forward * v + transform.right * h;
         Vector3 force = moveDir * moveSpeed;
+        if(!isGrounded) force *= airMoveSpeedMultiplier;
 
         rb.AddForce(force);
+
+        // Apply general damping
         rb.linearVelocity *= linearDamp;
-        
-        if (isGrounded)
+
+        // Extra damping if grounded
+        if(isGrounded)
         {
             rb.linearVelocity *= linearDamp * linearDamp;
         }
     }
+
 
     void HandleHand()
     {
