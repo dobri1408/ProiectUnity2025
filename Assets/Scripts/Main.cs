@@ -4,6 +4,12 @@ using TMPro;
 public class Main : MonoBehaviour
 {
     public string level;
+    private MainMenu mainMenu;
+
+    public void StartGame()
+    {
+        loadLevel("Tutorial");
+    }
 
     void loadLevel(string name)
     {
@@ -44,6 +50,8 @@ public class Main : MonoBehaviour
 
     void Start()
     {
-        loadLevel("Tutorial");
+        // Create main menu
+        GameObject menuObj = new GameObject("MainMenu");
+        mainMenu = menuObj.AddComponent<MainMenu>();
     }
 }
