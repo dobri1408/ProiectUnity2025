@@ -8,6 +8,8 @@ TagManager:
   - MovingPlatform
   - Moving Platform
   - Time
+  - Level
+  - UI
   layers:
   - Default
   - TransparentFX

@@ -13,6 +13,7 @@ public class Main : MonoBehaviour
 
     void loadLevel(string name)
     {
+        ClearLevel();
         this.level = name;
 
         GameObject level = Resources.Load<GameObject>(name);
@@ -26,25 +27,26 @@ public class Main : MonoBehaviour
         uiInstance.transform.Find("LevelName").GetComponent<TextMeshProUGUI>().text = name;
     }
 
-    void RestartLevel()
+void ClearLevel()
+{
+    GameObject[] rootObjects = gameObject.scene.GetRootGameObjects();
+
+    foreach (GameObject obj in rootObjects)
     {
-        GameObject[] rootObjects = gameObject.scene.GetRootGameObjects();
-
-        foreach (GameObject obj in rootObjects)
+        if (obj.CompareTag("Player") || 
+            obj.CompareTag("Level")  || 
+            obj.CompareTag("UI"))
         {
-            // Keep this manager AND the time-of-day object
-            if (obj != this.gameObject && obj.tag != "Time")
-                Destroy(obj);
+            Destroy(obj);
         }
-
-        loadLevel(level);
     }
+}
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            RestartLevel();
+            loadLevel(level);
         }
     }
 
