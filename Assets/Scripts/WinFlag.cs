@@ -1,4 +1,3 @@
-using System.Threading;
 using UnityEngine;
 
 public class WinTrigger : MonoBehaviour
@@ -16,9 +15,36 @@ public class WinTrigger : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && timer != null)
+        if (!other.CompareTag("Player"))
+            return;
+
+        if (timer == null)
         {
-            timer.StopTimer();
+            timer = FindObjectOfType<TimerUI>();
+            if (timer == null) return; // Timer still doesn't exist
         }
+
+        timer.StopTimer();
+        int elapsedTime = timer.GetElapsedMilliseconds();
+
+        // Get level name from Main manager
+        string levelName = "UnknownLevel";
+        Main main = FindObjectOfType<Main>();
+        if (main != null)
+            levelName = main.level;
+
+        GameObject winMenuPrefab = Resources.Load<GameObject>("WinMenu");
+        if (winMenuPrefab != null)
+        {
+            GameObject winMenuInstance = Instantiate(winMenuPrefab);
+            WinMenu winMenuScript = winMenuInstance.GetComponent<WinMenu>();
+            if (winMenuScript != null)
+            {
+                winMenuScript.Initialize(levelName, elapsedTime);
+            }
+        }
+
+        GetComponent<Collider>().enabled = false;
     }
+
 }

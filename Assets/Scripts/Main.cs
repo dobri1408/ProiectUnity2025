@@ -11,7 +11,7 @@ public class Main : MonoBehaviour
         loadLevel("Tutorial");
     }
 
-    void loadLevel(string name)
+    public void loadLevel(string name)
     {
         ClearLevel();
         this.level = name;

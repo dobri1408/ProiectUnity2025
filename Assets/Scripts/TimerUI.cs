@@ -24,4 +24,9 @@ public class TimerUI : MonoBehaviour
     {
         active = false;
     }
+
+    public int GetElapsedMilliseconds()
+    {
+        return Mathf.RoundToInt(t * 1000f);
+    }
 }
