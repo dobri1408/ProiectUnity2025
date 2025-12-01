@@ -51,6 +51,12 @@ public class Player : MonoBehaviour
         camTransform = GetComponentInChildren<Camera>().transform;
         handObj = hand.GetComponent<Hand>();
 
+        // Load saved mouse sensitivity
+        if (PlayerPrefs.HasKey("MouseSensitivity"))
+        {
+            mouseSens = PlayerPrefs.GetFloat("MouseSensitivity");
+        }
+
         // Setup audio sources
         windAudioSource = gameObject.AddComponent<AudioSource>();
         windAudioSource.clip = windSound;
