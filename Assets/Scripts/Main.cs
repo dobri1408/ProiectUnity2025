@@ -28,12 +28,12 @@ public class Main : MonoBehaviour
 
     void RestartLevel()
     {
-        // Get all root objects in the scene
         GameObject[] rootObjects = gameObject.scene.GetRootGameObjects();
 
         foreach (GameObject obj in rootObjects)
         {
-            if (obj != this.gameObject) // keep the Main object
+            // Keep this manager AND the time-of-day object
+            if (obj != this.gameObject && obj.tag != "Time")
                 Destroy(obj);
         }
 

@@ -148,7 +148,7 @@ GameObject:
   - component: {fileID: 309106486892458667}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -479,7 +479,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   moveSpeed: 25
-  moveDampPerc: 0.98
+  airMoveSpeedMultiplier: 0.25
+  linearDamp: 0.98
   maxSpeed: 5
   mouseSens: 300
   hand: {fileID: 5467078436733260055}
