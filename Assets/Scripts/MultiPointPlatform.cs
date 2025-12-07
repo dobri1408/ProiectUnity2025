@@ -13,6 +13,14 @@ public class MultiPointPlatform : MonoBehaviour
     private bool isWaiting = false;
     private float waitTimer = 0f;
 
+    void Start()
+    {
+        // Move instantly to the first point at start
+        if (points.Length > 0)
+        {
+            transform.position = points[0].position;
+        }
+    }
     void Update()
     {
         if (points.Length == 0) return;
