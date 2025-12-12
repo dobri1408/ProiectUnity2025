@@ -13,6 +13,12 @@ public class Main : MonoBehaviour
 
     public void loadLevel(string name)
     {
+        GameObject existingLevel = GameObject.Find(name + "(Clone)");
+        if (existingLevel != null)
+        {
+            return; // Exit early if level already exists
+        }
+
         ClearLevel();
         this.level = name;
 
