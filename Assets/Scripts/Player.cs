@@ -51,6 +51,8 @@ public class Player : MonoBehaviour
         camTransform = GetComponentInChildren<Camera>().transform;
         handObj = hand.GetComponent<Hand>();
 
+        handObj.player = transform; // give reference to self in hand
+
         // Load saved mouse sensitivity
         if (PlayerPrefs.HasKey("MouseSensitivity"))
         {
