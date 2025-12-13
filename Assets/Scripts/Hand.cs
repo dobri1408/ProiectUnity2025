@@ -32,7 +32,6 @@ public class Hand : MonoBehaviour
         float distance = Vector3.Distance(transform.position, player.position);
         Player p = player.GetComponent<Player>();
         
-        Debug.Log(p.handDist);
         if (p != null)
         {
             return distance <= p.handDist * 1.1f;

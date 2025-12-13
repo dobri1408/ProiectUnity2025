@@ -1,20 +1,18 @@
 # ASCENT
 
-**Un joc de alpinism solo dezvoltat in Unity**
+**Un joc de alpinism singleplayer dezvoltat in Unity**
 
 ---
 
 ## Despre Joc
 
-**ASCENT** este un joc single-player de escalada unde trebuie sa scalezi un munte periculos pentru a supravietui. Fiecare greseala te poate costa viata. Ai curajul sa ajungi la varf?
+**ASCENT** este un joc single-player de escaladat unde trebuie sa scalezi diverse nivele periculoase. Fiecare greseala te poate trimite la inceput. Ai determinarea sa ajungi la varful celor mai grele nivele?
 
 ---
 
 ## Caracteristici
 
 - **Escaladare realista** - Sistem de climbing cu management stamina
-- **4 Biome diferite** - Fiecare zona cu obstacole unice
-- **Sistem de supravietuire** - Colecteaza resurse si echipament
 - **Provocari contra timp** - Bate-ti propriile recorduri
 - **Personalizare** - Customizeaza-ti personajul
 
@@ -26,19 +24,9 @@
 
 - 3D
 - Level Based
-- Adventure
+- Exploration (Find your own path to victory)
+- Speedrunning (Beat your records)
 - Single-player
-
-### Descriere Tehnica
-
-Joc 3D de escalada cu sistem de physics-based climbing. Character controller custom pentru miscare si urcat. Sistem de stamina si damage care afecteaza gameplay-ul. Generare procedurala de teren pentru variabilitate.
-
-**Features implementate:**
-
-- Character controller pentru climbing
-- Shader-uri pentru efecte de mediu
-- Achievement system
-- Save/Load system
 
 ### Jocuri Similare
 
