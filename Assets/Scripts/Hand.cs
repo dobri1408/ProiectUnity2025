@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class Hand : MonoBehaviour
 {
@@ -8,6 +9,16 @@ public class Hand : MonoBehaviour
     private Transform tracker; // position that follows platform
     public Transform player;
 
+    private HashSet<string> grabable = new HashSet<string>()
+    {
+        "Brick",
+        "Wood",
+        "StoneBrick",
+        "Rock",
+        "TestMat",
+        "MossBrick"
+    };
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -15,7 +26,7 @@ public class Hand : MonoBehaviour
 
     void OnCollisionStay(Collision collision)
     {
-        if (Input.GetMouseButton(0) && IsWithinHandDistance() && !isAnchored) {
+        if (Input.GetMouseButton(0) && IsWithinHandDistance() && isGrabableMat(collision.gameObject) && !isAnchored) {
             isAnchored = true;
 
             collObj = collision.gameObject;
@@ -36,6 +47,26 @@ public class Hand : MonoBehaviour
         {
             return distance <= p.handDist * 1.1f;
         }
+        return false;
+    }
+
+    private bool isGrabableMat(GameObject obj)
+    {
+        if (obj == null) return false;
+        Renderer renderer = obj.GetComponent<Renderer>();
+        if (renderer == null) return false;
+        
+        // Check all materials on the object
+        foreach (Material mat in renderer.sharedMaterials)
+        {
+            if (mat == null) continue;
+            
+            string matName = mat.name.Replace(" (Instance)", "");
+            
+            if (grabable.Contains(matName))
+                return true;
+        }
+        
         return false;
     }
 
