@@ -8,6 +8,7 @@ public class Hand : MonoBehaviour
     private GameObject collObj; // object hand is anchored to, used for moving platforms
     private Transform tracker; // position that follows platform
     public Transform player;
+    private Player playerObj;
 
     private HashSet<string> grabable = new HashSet<string>()
     {
@@ -22,11 +23,12 @@ public class Hand : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        playerObj = transform.parent.GetComponentInChildren<Player>(); 
     }
 
     void OnCollisionStay(Collision collision)
     {
-        if (Input.GetMouseButton(0) && IsWithinHandDistance() && isGrabableMat(collision.gameObject) && !isAnchored) {
+        if (Input.GetMouseButton(0) && IsWithinHandDistance() && isGrabableMat(collision.gameObject) && !isAnchored && playerObj.exhausted == false) {
             isAnchored = true;
 
             collObj = collision.gameObject;
@@ -73,7 +75,7 @@ public class Hand : MonoBehaviour
     void FixedUpdate()
     {
         if(!IsWithinHandDistance()) isAnchored = false;
-        if (isAnchored && Input.GetMouseButton(0))
+        if (isAnchored && Input.GetMouseButton(0) && playerObj.exhausted == false)
         {
             rb.linearVelocity = Vector3.zero;
             gameObject.GetComponent<Renderer>().material.color = Color.gray;

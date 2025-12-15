@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -18,8 +19,14 @@ public class Player : MonoBehaviour
     public Rigidbody hand;
     public float handSpeed = 5f;
     public float handDist = 2f;
-    public float maxHandDist = 3f;
+    public float maxHandDist = 3.25f;
     public float handDamp = 0.2f;
+    [Header("Stamina")]
+    public float maxStamina = 1f;
+    private float staminaRegenMult = 0.5f;
+    private float staminaDrainMult = 0.3f;
+    public float stamina;
+    public bool exhausted = false;
 
     [Header("Audio Settings")]
     public AudioClip windSound;
@@ -107,6 +114,7 @@ public class Player : MonoBehaviour
         CheckGrounded();
         HandleMovement();
         HandleHand();
+        HandleStamina(); // call after hand for Anchored status
     }
 
     void CheckGrounded()
@@ -170,7 +178,6 @@ public class Player : MonoBehaviour
             rb.linearVelocity *= linearDamp * linearDamp;
         }
     }
-
 
     void HandleHand()
     {
@@ -247,6 +254,22 @@ public class Player : MonoBehaviour
         {
             // Fade out rapid când te oprești sau sari
             footstepsAudioSource.volume = Mathf.Lerp(footstepsAudioSource.volume, 0f, Time.deltaTime * 18f);
+        }
+    }
+
+    void HandleStamina()
+    {
+        if(handObj.isAnchored) {
+            stamina -= Time.deltaTime * staminaDrainMult;
+            if(stamina <= 0) {
+                stamina = Mathf.Max(stamina, 0);
+                exhausted = true;
+            }
+        }
+        else {
+            stamina += Time.deltaTime * staminaRegenMult;
+            stamina = Mathf.Min(stamina, maxStamina);
+            if(stamina > 0.5f) exhausted = false; // 0.5 base seconds of grab time, not modified by drain multiplier
         }
     }
 }
