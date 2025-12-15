@@ -33,7 +33,6 @@ public class StaminaUI : MonoBehaviour
         // Update the bar
         if (playerObj != null)
         {
-            Debug.Log("changing stamina bar");
             float newWidth = maxWidth * (playerObj.stamina / playerObj.maxStamina);
             rectTransform.sizeDelta = new Vector2(newWidth, rectTransform.sizeDelta.y);
             

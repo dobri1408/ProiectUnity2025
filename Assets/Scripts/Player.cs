@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
     public float handDamp = 0.2f;
     [Header("Stamina")]
     public float maxStamina = 1f;
-    private float staminaRegenMult = 0.5f;
+    private float staminaRegenMult = 0.25f;
     private float staminaDrainMult = 0.3f;
     public float stamina;
     public bool exhausted = false;
@@ -119,22 +119,22 @@ public class Player : MonoBehaviour
 
     void CheckGrounded()
     {
-        // Use SphereCast for more reliable ground detection
         RaycastHit hit;
         Vector3 spherePosition = transform.position;
-
+        
+        // Create layer mask that ignores Player layer
+        int layerMask = ~LayerMask.GetMask("Player");
+        
         // Check with raycast first
-        bool rayHit = Physics.Raycast(spherePosition, Vector3.down, out hit, groundCheckDistance);
-
+        bool rayHit = Physics.Raycast(spherePosition, Vector3.down, out hit, groundCheckDistance, layerMask);
         // Also check with sphere cast for better detection
-        bool sphereHit = Physics.SphereCast(spherePosition, groundCheckRadius, Vector3.down, out hit, groundCheckDistance);
-
+        bool sphereHit = Physics.SphereCast(spherePosition, groundCheckRadius, Vector3.down, out hit, groundCheckDistance, layerMask);
         isGrounded = rayHit || sphereHit;
-
-        // Additional check: if vertical velocity is very small and we're close to something below
+        
+        // Additional check
         if (!isGrounded && Mathf.Abs(rb.linearVelocity.y) < 0.5f)
         {
-            isGrounded = Physics.Raycast(spherePosition, Vector3.down, groundCheckDistance * 1.5f);
+            isGrounded = Physics.Raycast(spherePosition, Vector3.down, groundCheckDistance * 1.5f, layerMask);
         }
     }
 
