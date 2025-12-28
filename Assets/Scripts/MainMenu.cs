@@ -7,6 +7,7 @@ public class MainMenu : MonoBehaviour
     private Canvas menuCanvas;
     private GameObject mainPanel;
     private GameObject settingsPanel;
+    private LevelSelectMenu levelSelectMenu;
     private Main mainScript;
     private bool isGameStarted = false;
     private bool isPaused = false;
@@ -60,21 +61,8 @@ public class MainMenu : MonoBehaviour
 
         canvasObj.AddComponent<GraphicRaycaster>();
 
-        // Background with gradient effect
-        GameObject background = CreatePanel(canvasObj.transform, "Background", new Color(0.05f, 0.08f, 0.12f, 1f));
-        RectTransform bgRect = background.GetComponent<RectTransform>();
-        bgRect.anchorMin = Vector2.zero;
-        bgRect.anchorMax = Vector2.one;
-        bgRect.offsetMin = Vector2.zero;
-        bgRect.offsetMax = Vector2.zero;
-
-        // Overlay gradient
-        GameObject overlay = CreatePanel(canvasObj.transform, "Overlay", new Color(0.1f, 0.15f, 0.25f, 0.5f));
-        RectTransform overlayRect = overlay.GetComponent<RectTransform>();
-        overlayRect.anchorMin = Vector2.zero;
-        overlayRect.anchorMax = Vector2.one;
-        overlayRect.offsetMin = Vector2.zero;
-        overlayRect.offsetMax = Vector2.zero;
+        // Animated climbing-themed background
+        CreateClimbingBackground(canvasObj.transform);
 
         // Main Panel
         mainPanel = new GameObject("MainPanel");
@@ -82,7 +70,7 @@ public class MainMenu : MonoBehaviour
         RectTransform mainRect = mainPanel.AddComponent<RectTransform>();
         mainRect.anchorMin = new Vector2(0.5f, 0.5f);
         mainRect.anchorMax = new Vector2(0.5f, 0.5f);
-        mainRect.sizeDelta = new Vector2(500, 550);
+        mainRect.sizeDelta = new Vector2(500, 620);
 
         // Game Title - "ASCENT"
         CreateTitle(mainPanel.transform, "ASCENT", new Vector2(0, 180));
@@ -91,12 +79,16 @@ public class MainMenu : MonoBehaviour
         CreateSubtitle(mainPanel.transform, "A Climbing Adventure", new Vector2(0, 120));
 
         // Buttons
-        CreateStyledButton(mainPanel.transform, "PlayButton", "PLAY", new Vector2(0, 20), OnPlayClicked);
-        CreateStyledButton(mainPanel.transform, "SettingsButton", "SETTINGS", new Vector2(0, -60), OnSettingsClicked);
-        CreateStyledButton(mainPanel.transform, "ExitButton", "EXIT", new Vector2(0, -140), OnExitClicked);
+        CreateStyledButton(mainPanel.transform, "PlayButton", "PLAY", new Vector2(0, 40), OnPlayClicked);
+        CreateStyledButton(mainPanel.transform, "LevelSelectButton", "LEVEL SELECT", new Vector2(0, -40), OnLevelSelectClicked);
+        CreateStyledButton(mainPanel.transform, "SettingsButton", "SETTINGS", new Vector2(0, -120), OnSettingsClicked);
+        CreateStyledButton(mainPanel.transform, "ExitButton", "EXIT", new Vector2(0, -200), OnExitClicked);
 
         // Footer hint
-        CreateHintText(mainPanel.transform, "Press ESC to pause during game", new Vector2(0, -220));
+        CreateHintText(mainPanel.transform, "Press ESC to pause during game", new Vector2(0, -270));
+
+        // Initialize GameSaveManager
+        _ = GameSaveManager.Instance;
 
         // Create Settings Panel
         CreateSettingsPanel(canvasObj.transform);
@@ -113,6 +105,127 @@ public class MainMenu : MonoBehaviour
         Image img = panel.AddComponent<Image>();
         img.color = color;
         return panel;
+    }
+
+    void CreateClimbingBackground(Transform parent)
+    {
+        // Dark sky gradient background
+        GameObject bg = new GameObject("Background");
+        bg.transform.SetParent(parent, false);
+        Image bgImg = bg.AddComponent<Image>();
+        bgImg.color = new Color(0.02f, 0.05f, 0.12f, 1f);
+        RectTransform bgRect = bg.GetComponent<RectTransform>();
+        bgRect.anchorMin = Vector2.zero;
+        bgRect.anchorMax = Vector2.one;
+        bgRect.offsetMin = Vector2.zero;
+        bgRect.offsetMax = Vector2.zero;
+
+        // Mountain silhouettes in background
+        CreateMountainLayer(parent, 0.15f, new Color(0.08f, 0.12f, 0.2f, 1f), 0);
+        CreateMountainLayer(parent, 0.25f, new Color(0.05f, 0.08f, 0.15f, 1f), -100);
+        CreateMountainLayer(parent, 0.35f, new Color(0.03f, 0.05f, 0.1f, 1f), -200);
+
+        // Floating rocks/climbing holds
+        for (int i = 0; i < 12; i++)
+        {
+            CreateFloatingRock(parent, i);
+        }
+
+        // Climbing rope on the side
+        CreateClimbingRope(parent, true);
+        CreateClimbingRope(parent, false);
+
+        // Subtle fog/mist overlay
+        GameObject mist = new GameObject("Mist");
+        mist.transform.SetParent(parent, false);
+        Image mistImg = mist.AddComponent<Image>();
+        mistImg.color = new Color(0.1f, 0.15f, 0.25f, 0.3f);
+        RectTransform mistRect = mist.GetComponent<RectTransform>();
+        mistRect.anchorMin = Vector2.zero;
+        mistRect.anchorMax = Vector2.one;
+        mistRect.offsetMin = Vector2.zero;
+        mistRect.offsetMax = Vector2.zero;
+    }
+
+    void CreateMountainLayer(Transform parent, float heightPercent, Color color, float offsetY)
+    {
+        GameObject mountain = new GameObject("Mountain");
+        mountain.transform.SetParent(parent, false);
+
+        // Create mountain peak shapes using text symbols
+        TextMeshProUGUI peakText = mountain.AddComponent<TextMeshProUGUI>();
+        peakText.text = "\u25B2  \u25B2  \u25B2  \u25B2  \u25B2  \u25B2  \u25B2"; // Triangle symbols
+        peakText.fontSize = 200;
+        peakText.alignment = TextAlignmentOptions.Bottom;
+        peakText.color = color;
+        peakText.characterSpacing = 50;
+
+        RectTransform rect = mountain.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0, 0);
+        rect.anchorMax = new Vector2(1, heightPercent);
+        rect.offsetMin = new Vector2(-200, offsetY);
+        rect.offsetMax = new Vector2(200, 0);
+
+        // Add slow parallax movement
+        MountainParallax parallax = mountain.AddComponent<MountainParallax>();
+        parallax.speed = 5f * (1f - heightPercent);
+    }
+
+    void CreateFloatingRock(Transform parent, int index)
+    {
+        GameObject rock = new GameObject($"Rock_{index}");
+        rock.transform.SetParent(parent, false);
+
+        TextMeshProUGUI rockText = rock.AddComponent<TextMeshProUGUI>();
+        // Use different rock/stone symbols
+        string[] rockSymbols = { "\u25C6", "\u25C7", "\u2B22", "\u2B23", "\u25CF" };
+        rockText.text = rockSymbols[index % rockSymbols.Length];
+        rockText.fontSize = Random.Range(20, 60);
+        rockText.alignment = TextAlignmentOptions.Center;
+
+        float gray = Random.Range(0.2f, 0.4f);
+        rockText.color = new Color(gray, gray * 1.1f, gray * 1.2f, Random.Range(0.3f, 0.6f));
+
+        RectTransform rect = rock.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0.5f, 0.5f);
+        rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.sizeDelta = new Vector2(100, 100);
+        rect.anchoredPosition = new Vector2(
+            Random.Range(-800f, 800f),
+            Random.Range(-400f, 400f)
+        );
+
+        // Add floating animation
+        FloatingRock floater = rock.AddComponent<FloatingRock>();
+        floater.Initialize(
+            Random.Range(0.3f, 0.8f),
+            Random.Range(15f, 40f),
+            Random.Range(0.5f, 1.5f)
+        );
+    }
+
+    void CreateClimbingRope(Transform parent, bool leftSide)
+    {
+        GameObject rope = new GameObject(leftSide ? "RopeLeft" : "RopeRight");
+        rope.transform.SetParent(parent, false);
+
+        // Create rope using vertical line of symbols
+        TextMeshProUGUI ropeText = rope.AddComponent<TextMeshProUGUI>();
+        ropeText.text = "|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|";
+        ropeText.fontSize = 40;
+        ropeText.alignment = TextAlignmentOptions.Center;
+        ropeText.color = new Color(0.6f, 0.45f, 0.3f, 0.4f);
+        ropeText.lineSpacing = -20;
+
+        RectTransform rect = rope.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(leftSide ? 0.05f : 0.95f, 0);
+        rect.anchorMax = new Vector2(leftSide ? 0.08f : 0.98f, 1);
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+
+        // Add swaying animation
+        RopeSwayAnimation sway = rope.AddComponent<RopeSwayAnimation>();
+        sway.Initialize(leftSide ? 1f : -1f);
     }
 
     void CreateTitle(Transform parent, string text, Vector2 position)
@@ -234,6 +347,9 @@ public class MainMenu : MonoBehaviour
         textRect.anchorMax = Vector2.one;
         textRect.offsetMin = Vector2.zero;
         textRect.offsetMax = Vector2.zero;
+
+        // Add button animation
+        buttonObj.AddComponent<ButtonAnimator>();
     }
 
     void CreateSettingsPanel(Transform parent)
@@ -377,6 +493,38 @@ public class MainMenu : MonoBehaviour
         menuCanvas.gameObject.SetActive(false);
         settingsPanel.SetActive(false);
         mainScript.StartGame();
+    }
+
+    void OnLevelSelectClicked()
+    {
+        menuCanvas.gameObject.SetActive(false);
+
+        if (levelSelectMenu == null)
+        {
+            GameObject levelSelectObj = new GameObject("LevelSelectMenu");
+            levelSelectMenu = levelSelectObj.AddComponent<LevelSelectMenu>();
+            levelSelectMenu.Initialize(mainScript, OnLevelSelectBack, OnLevelStarted);
+        }
+        else
+        {
+            levelSelectMenu.Show();
+        }
+    }
+
+    void OnLevelSelectBack()
+    {
+        menuCanvas.gameObject.SetActive(true);
+        mainPanel.SetActive(true);
+        if (isGameStarted)
+        {
+            isPaused = true;
+        }
+    }
+
+    void OnLevelStarted()
+    {
+        isGameStarted = true;
+        isPaused = false;
     }
 
     void OnSettingsClicked()

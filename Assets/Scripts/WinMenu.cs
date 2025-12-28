@@ -11,7 +11,11 @@ public class WinMenu : MonoBehaviour
 
     void Awake()
     {
+        // Time thresholds for stars (in milliseconds) - faster = more stars
         timesDict["Tutorial"] = new List<int> { 35000, 25000, 16000, 14000 };
+        timesDict["Level1"] = new List<int> { 60000, 45000, 30000, 25000 };
+        timesDict["Level2"] = new List<int> { 90000, 70000, 50000, 40000 };
+        timesDict["Level3"] = new List<int> { 120000, 90000, 60000, 45000 };
     }
 
     public void Initialize(string levelName, int timeInMilliseconds)
@@ -21,6 +25,12 @@ public class WinMenu : MonoBehaviour
         int stars = CalculateStars(levelName, timeInMilliseconds);
         DisplayNextStar(stars, levelName);
         SetStarColors(stars);
+
+        // Save progress to GameSaveManager
+        if (GameSaveManager.Instance != null)
+        {
+            GameSaveManager.Instance.CompleteLevel(levelName, timeInMilliseconds, stars);
+        }
 
         Cursor.lockState = CursorLockMode.None; // Unlocks the cursor
         Cursor.visible = true;                  // Makes the cursor visible
