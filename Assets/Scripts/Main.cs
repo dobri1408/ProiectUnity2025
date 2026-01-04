@@ -11,10 +11,10 @@ public class Main : MonoBehaviour
         loadLevel("Tutorial");
     }
 
-    public void loadLevel(string name)
+    public void loadLevel(string name, bool forced = false)
     {
         GameObject existingLevel = GameObject.Find(name + "(Clone)");
-        if (existingLevel != null)
+        if (existingLevel != null && !forced)
         {
             return; // Exit early if level already exists
         }
@@ -30,29 +30,29 @@ public class Main : MonoBehaviour
 
         GameObject ui = Resources.Load<GameObject>("UI");
         GameObject uiInstance = Instantiate(ui, Vector3.zero, Quaternion.identity);
-        uiInstance.transform.Find("LevelName").GetComponent<TextMeshProUGUI>().text = name;
+                uiInstance.transform.Find("LevelName").GetComponent<TextMeshProUGUI>().text = name;
     }
 
-void ClearLevel()
-{
-    GameObject[] rootObjects = gameObject.scene.GetRootGameObjects();
-
-    foreach (GameObject obj in rootObjects)
+    void ClearLevel()
     {
-        if (obj.CompareTag("Player") || 
-            obj.CompareTag("Level")  || 
-            obj.CompareTag("UI"))
+        GameObject[] rootObjects = gameObject.scene.GetRootGameObjects();
+
+        foreach (GameObject obj in rootObjects)
         {
-            Destroy(obj);
+            if (obj.CompareTag("Player") || 
+                obj.CompareTag("Level")  || 
+                obj.CompareTag("UI"))
+            {
+                Destroy(obj);
+            }
         }
     }
-}
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            loadLevel(level);
+            loadLevel(level, true);
         }
     }
 
