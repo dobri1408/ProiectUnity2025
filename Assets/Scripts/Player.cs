@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -46,6 +47,7 @@ public class Player : MonoBehaviour
     private AudioSource footstepsAudioSource;
     private bool isGrounded;
     private float footstepTimer;
+    public bool cheated = false;
 
     void Start()
     {
@@ -272,4 +274,5 @@ public class Player : MonoBehaviour
             if(stamina > 0.5f) exhausted = false; // 0.5 base seconds of grab time, not modified by drain multiplier
         }
     }
+
 }

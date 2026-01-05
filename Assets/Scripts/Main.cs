@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -45,14 +46,108 @@ public class Main : MonoBehaviour
             {
                 Destroy(obj);
             }
+
+            // Clear all checkpoints but keep the root object
+            if (obj.name == "Checkpoints")
+            {
+                Transform t = obj.transform;
+                for (int i = t.childCount - 1; i >= 0; i--)
+                {
+                    Destroy(t.GetChild(i).gameObject);
+                }
+            }
         }
+    }
+
+    void enableCheated() {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        player.transform.Find("Body").GetComponent<Player>().cheated = true;
+        GameObject.FindGameObjectWithTag("UI").transform.Find("Practice").gameObject.SetActive(true);
+    }
+
+    void CreateCheckpoint()
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null) return;
+        
+        enableCheated();
+
+        GameObject root = GetCheckpointRoot();
+
+        GameObject checkpoint = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        checkpoint.name = "Checkpoint";
+
+        // Slight Y offset so it doesn't clip into the ground
+        checkpoint.transform.position = player.transform.Find("Body").position + Vector3.up * 0.05f;
+
+        Destroy(checkpoint.GetComponent<Collider>());
+
+        checkpoint.transform.SetParent(root.transform);
+    }
+
+    bool TeleportToLastCheckpoint()
+    {
+        GameObject root = GameObject.Find("Checkpoints");
+        if (root == null || root.transform.childCount == 0)
+            return false;
+
+        Transform lastCheckpoint = root.transform.GetChild(root.transform.childCount - 1);
+
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null) return false;
+
+        Rigidbody rb = player.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+
+        player.transform.Find("Body").position = lastCheckpoint.position;
+        return true;
+    }
+
+    GameObject GetCheckpointRoot()
+    {
+        GameObject root = GameObject.Find("Checkpoints");
+        if (root == null)
+        {
+            root = new GameObject("Checkpoints");
+        }
+        return root;
+    }
+
+    void DeleteLastCheckpoint()
+    {
+        GameObject root = GameObject.Find("Checkpoints");
+        if (root == null) return;
+
+        Transform t = root.transform;
+        if (t.childCount == 0) return;
+
+        Transform last = t.GetChild(t.childCount - 1);
+        Destroy(last.gameObject);
     }
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            CreateCheckpoint();
+        }
+
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            DeleteLastCheckpoint();
+        }
+
         if (Input.GetKeyDown(KeyCode.R))
         {
-            loadLevel(level, true);
+            if (!TeleportToLastCheckpoint())
+            {
+                // If no checkpoint exists, reload level
+                loadLevel(level, true);
+            }
         }
     }
 

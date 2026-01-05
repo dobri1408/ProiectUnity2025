@@ -18,6 +18,12 @@ public class WinTrigger : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
+        bool cheated = other.GetComponent<Player>().cheated;
+        if(cheated) {
+            Debug.Log("Cheated run");            
+            return;
+        }
+
         if (timer == null)
         {
             timer = FindObjectOfType<TimerUI>();

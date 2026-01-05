@@ -105,7 +105,7 @@ public class WinMenu : MonoBehaviour
 
         List<int> thresholds = timesDict[levelName];
 
-        // The "next" star is at index starsEarned (0-based)
+        // The "next" star is at index starsEarned (0 - based)
         if (starsEarned < thresholds.Count)
         {
             int nextThreshold = thresholds[starsEarned];
@@ -152,7 +152,7 @@ public class WinMenu : MonoBehaviour
         if (mainScript != null)
         {
             string currentLevel = mainScript.level; // Get the current level
-            mainScript.loadLevel(currentLevel);     // Call LoadLevel with that level
+            mainScript.loadLevel(currentLevel, true);     // Call LoadLevel with that level
         }
         else
         {
