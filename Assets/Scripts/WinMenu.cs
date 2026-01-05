@@ -12,7 +12,7 @@ public class WinMenu : MonoBehaviour
     void Awake()
     {
         // Time thresholds for stars (in milliseconds) - faster = more stars
-        timesDict["Tutorial"] = new List<int> { 35000, 25000, 16000, 14000 };
+        timesDict["Tutorial"] = new List<int> { 60000, 80000, 100000, 150000 };
         timesDict["Level1"] = new List<int> { 60000, 45000, 30000, 25000 };
         timesDict["Level2"] = new List<int> { 90000, 70000, 50000, 40000 };
         timesDict["Level3"] = new List<int> { 120000, 90000, 60000, 45000 };

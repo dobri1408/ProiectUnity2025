@@ -3,8 +3,10 @@ using System.Collections.Generic;
 
 public class Hand : MonoBehaviour
 {
-    private Rigidbody rb;
+    public float grabableDistanceMultiplier = 1.25f; // how far until forcefully let go
     public bool isAnchored = false;
+
+    private Rigidbody rb;
     private GameObject collObj; // object hand is anchored to, used for moving platforms
     private Transform tracker; // position that follows platform
     public Transform player;
@@ -17,7 +19,6 @@ public class Hand : MonoBehaviour
         "StoneBrick",
         "Rock",
         "TestMat",
-        "MossBrick"
     };
 
     void Start()
@@ -47,7 +48,7 @@ public class Hand : MonoBehaviour
         
         if (p != null)
         {
-            return distance <= p.handDist * 1.1f;
+            return distance <= p.handDist * grabableDistanceMultiplier;
         }
         return false;
     }

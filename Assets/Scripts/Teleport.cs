@@ -26,5 +26,28 @@ public class TeleportFrom : MonoBehaviour
         // Teleport
         other.transform.position = to.position;
     }
+
+    void Start()
+    {
+        // Remove visuals from this GameObject
+        RemoveVisuals(gameObject);
+    }
+
+    void RemoveVisuals(GameObject obj)
+    {
+        if (obj == null) return;
+
+        // Remove MeshRenderer if it exists
+        MeshRenderer mr = obj.GetComponent<MeshRenderer>();
+        if (mr != null) Destroy(mr);
+
+        // Remove MeshFilter if it exists
+        MeshFilter mf = obj.GetComponent<MeshFilter>();
+        if (mf != null) Destroy(mf);
+
+        // Remove SkinnedMeshRenderer if it exists (for characters)
+        SkinnedMeshRenderer smr = obj.GetComponent<SkinnedMeshRenderer>();
+        if (smr != null) Destroy(smr);
+    }
 }
 

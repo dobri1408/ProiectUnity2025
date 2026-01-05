@@ -6,10 +6,10 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float moveSpeed = 5f;
-    public float airMoveSpeedMultiplier = 0.25f;
-    public float linearDamp = 0.98f;
-    public float maxSpeed = 5f;
+    public float moveSpeed = 20f;
+    public float airMoveSpeedMultiplier = 0.2f;
+    public float linearDamp = 0.97f;
+    public float maxSpeed = 6f;
 
     [Header("Camera Settings")]
     private Transform camTransform;
@@ -20,12 +20,12 @@ public class Player : MonoBehaviour
     public Rigidbody hand;
     public float handSpeed = 5f;
     public float handDist = 2f;
-    public float maxHandDist = 3.25f;
-    public float handDamp = 0.2f;
+    public float maxHandDist = 3.5f;
+    public float handDamp = 0.7f;
     [Header("Stamina")]
     public float maxStamina = 1f;
-    private float staminaRegenMult = 0.25f;
-    private float staminaDrainMult = 0.3f;
+    private float staminaRegenMult = 0.35f;
+    private float staminaDrainMult = 0.25f;
     public float stamina;
     public bool exhausted = false;
 
@@ -35,8 +35,8 @@ public class Player : MonoBehaviour
     public float maxWindVolume = 1.0f;
     public float windVelocityThreshold = 0.3f;
     public float maxWindVelocity = 6f;
-    public float groundCheckDistance = 0.6f;
-    public float groundCheckRadius = 0.3f;
+    public float groundCheckDistance = 0.67f;
+    public float groundCheckRadius = 0.5f;
     public LayerMask groundLayer;
     public float footstepVolume = 0.9f;
 
@@ -268,11 +268,10 @@ public class Player : MonoBehaviour
                 exhausted = true;
             }
         }
-        else {
-            stamina += Time.deltaTime * staminaRegenMult;
-            stamina = Mathf.Min(stamina, maxStamina);
-            if(stamina > 0.5f) exhausted = false; // 0.5 base seconds of grab time, not modified by drain multiplier
-        }
+        if(!isGrounded) return;
+        stamina += Time.deltaTime * staminaRegenMult;
+        stamina = Mathf.Min(stamina, maxStamina);
+        if(stamina > 0.5f) exhausted = false;
     }
 
 }

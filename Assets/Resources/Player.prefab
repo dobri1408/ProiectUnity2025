@@ -586,7 +586,7 @@ Transform:
   m_GameObject: {fileID: 5560329972681865200}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.007, z: 0}
+  m_LocalPosition: {x: 0, y: 0.009, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -840,8 +840,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 385f1daa7850c1a41b2343e56bafb148, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Hand
+  grabableDistanceMultiplier: 1.25
   isAnchored: 0
-  player: {fileID: 0}
+  player: {fileID: 4781294757941795829}
 --- !u!1 &7981871908806202865
 GameObject:
   m_ObjectHideFlags: 0
@@ -997,31 +998,32 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d15471cd66e27624c8cf2c70838dff42, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  moveSpeed: 25
-  airMoveSpeedMultiplier: 0.25
-  linearDamp: 0.98
-  maxSpeed: 5
+  m_EditorClassIdentifier: Assembly-CSharp::Player
+  moveSpeed: 20
+  airMoveSpeedMultiplier: 0.2
+  linearDamp: 0.97
+  maxSpeed: 6
   mouseSens: 300
   hand: {fileID: 5467078436733260055}
-  handSpeed: 10
+  handSpeed: 5
   handDist: 2
   maxHandDist: 3
-  handDamp: 100
+  handDamp: 1
   maxStamina: 1
   stamina: 0
   exhausted: 0
   windSound: {fileID: 8300000, guid: 61bccf4232f1644c1bca29571cd9f770, type: 3}
   footstepsSound: {fileID: 8300000, guid: 7dfe0697d76254b2088be8d0e3e346fc, type: 3}
-  maxWindVolume: 0.8
-  windVelocityThreshold: 2
-  maxWindVelocity: 10
-  groundCheckDistance: 1.1
-  groundCheckRadius: 0.3
+  maxWindVolume: 1
+  windVelocityThreshold: 0.3
+  maxWindVelocity: 6
+  groundCheckDistance: 0.67
+  groundCheckRadius: 0.5
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
-  footstepVolume: 0.5
+    m_Bits: 4294967295
+  footstepVolume: 0.9
+  cheated: 0
 --- !u!1 &7996808512606648843
 GameObject:
   m_ObjectHideFlags: 0
