@@ -6,6 +6,7 @@ public class Main : MonoBehaviour
 {
     public string level;
     private MainMenu mainMenu;
+    private LoadingScreen loadingScreen;
 
     public void StartGame()
     {
@@ -20,18 +21,46 @@ public class Main : MonoBehaviour
             return; // Exit early if level already exists
         }
 
+        // Verifica daca loading screen e ocupat
+        if (loadingScreen != null && loadingScreen.IsLoading())
+        {
+            return;
+        }
+
         ClearLevel();
         this.level = name;
 
-        GameObject level = Resources.Load<GameObject>("Levels/" + name);
-        Instantiate(level, Vector3.zero, Quaternion.identity);
+        // Daca loadingScreen nu e gata, foloseste incarcare sincrona
+        if (loadingScreen == null)
+        {
+            LoadLevelSync(name);
+            return;
+        }
 
-        GameObject player = Resources.Load<GameObject>("Player");
-        Instantiate(player, new Vector3(0, 1, 0), Quaternion.identity);
+        // Foloseste incarcare asincrona
+        loadingScreen.LoadLevelAsync(name, (levelPrefab, playerPrefab, uiPrefab) =>
+        {
+            // Instantiaza dupa ce totul s-a incarcat
+            Instantiate(levelPrefab, Vector3.zero, Quaternion.identity);
+            Instantiate(playerPrefab, new Vector3(0, 1, 0), Quaternion.identity);
 
-        GameObject ui = Resources.Load<GameObject>("UIs/UI");
-        GameObject uiInstance = Instantiate(ui, Vector3.zero, Quaternion.identity);
-                uiInstance.transform.Find("LevelName").GetComponent<TextMeshProUGUI>().text = name;
+            GameObject uiInstance = Instantiate(uiPrefab, Vector3.zero, Quaternion.identity);
+            uiInstance.transform.Find("LevelName").GetComponent<TextMeshProUGUI>().text = name;
+        });
+    }
+
+    // Fallback pentru incarcare sincrona
+    private void LoadLevelSync(string name)
+    {
+        GameObject levelPrefab = Resources.Load<GameObject>("Levels/" + name);
+        Instantiate(levelPrefab, Vector3.zero, Quaternion.identity);
+
+        GameObject playerPrefab = Resources.Load<GameObject>("Player");
+        Instantiate(playerPrefab, new Vector3(0, 1, 0), Quaternion.identity);
+
+        GameObject uiPrefab = Resources.Load<GameObject>("UIs/UI");
+        GameObject uiInstance = Instantiate(uiPrefab, Vector3.zero, Quaternion.identity);
+        uiInstance.transform.Find("LevelName").GetComponent<TextMeshProUGUI>().text = name;
     }
 
     void ClearLevel()
@@ -153,6 +182,15 @@ public class Main : MonoBehaviour
 
     void Start()
     {
+        // Create music manager
+        GameObject musicObj = new GameObject("MusicManager");
+        musicObj.AddComponent<MusicManager>();
+
+        // Create loading screen
+        GameObject loadingObj = new GameObject("LoadingScreen");
+        loadingScreen = loadingObj.AddComponent<LoadingScreen>();
+        DontDestroyOnLoad(loadingObj);
+
         // Create main menu
         GameObject menuObj = new GameObject("MainMenu");
         mainMenu = menuObj.AddComponent<MainMenu>();
