@@ -12,7 +12,7 @@ public class Hand : MonoBehaviour
     public Transform player;
     private Player playerObj;
 
-    // list of grabable materials
+    // list of grabable materials, might replace with material class
     private HashSet<string> grabable = new HashSet<string>()
     {
         "Brick",
@@ -25,7 +25,7 @@ public class Hand : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        playerObj = transform.parent.GetComponentInChildren<Player>();
+        playerObj = transform.parent.GetComponentInChildren<Player>(); 
     }
 
     void OnCollisionStay(Collision collision)
@@ -35,9 +35,7 @@ public class Hand : MonoBehaviour
             isAnchored = true;
 
             collObj = collision.gameObject;
-            GameObject trackerObj = new GameObject();
-            trackerObj.hideFlags = HideFlags.HideAndDontSave;
-            tracker = trackerObj.transform;
+            tracker = new GameObject("Tracker").transform;
             tracker.SetParent(collObj.transform);
             tracker.position = transform.position;
         }
@@ -47,10 +45,10 @@ public class Hand : MonoBehaviour
     private bool IsWithinHandDistance()
     {
         if (player == null) return false;
-
+        
         float distance = Vector3.Distance(transform.position, player.position);
         Player p = player.GetComponent<Player>();
-
+        
         if (p != null)
         {
             return distance <= p.handDist * grabableDistanceMultiplier;
@@ -64,18 +62,18 @@ public class Hand : MonoBehaviour
         if (obj == null) return false;
         Renderer renderer = obj.GetComponent<Renderer>();
         if (renderer == null) return false;
-
+        
         // Check all materials on the object
         foreach (Material mat in renderer.sharedMaterials)
         {
             if (mat == null) continue;
-
+            
             string matName = mat.name.Replace(" (Instance)", "");
-
+            
             if (grabable.Contains(matName))
                 return true;
         }
-
+        
         return false;
     }
 
@@ -96,7 +94,7 @@ public class Hand : MonoBehaviour
             isAnchored = false;
             collObj = null; // free reference and tracker
             tracker = null;
-        }
-
+        }   
+        
     }
 }
