@@ -36,6 +36,10 @@ public class MainMenu : MonoBehaviour
             menuCanvas.gameObject.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+
+            // muzica mai incet in pauza
+            if (MusicManager.Instance != null)
+                MusicManager.Instance.OnEnterMenu();
         }
         else
         {
@@ -44,6 +48,10 @@ public class MainMenu : MonoBehaviour
             settingsPanel.SetActive(false);
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+
+            // muzica la volum plin
+            if (MusicManager.Instance != null)
+                MusicManager.Instance.OnEnterGameplay();
         }
     }
 
@@ -363,22 +371,27 @@ public class MainMenu : MonoBehaviour
         RectTransform rect = settingsPanel.GetComponent<RectTransform>();
         rect.anchorMin = new Vector2(0.5f, 0.5f);
         rect.anchorMax = new Vector2(0.5f, 0.5f);
-        rect.sizeDelta = new Vector2(500, 400);
+        rect.sizeDelta = new Vector2(500, 480);
 
         // Settings Title
-        CreateSettingsTitle(settingsPanel.transform, "SETTINGS", new Vector2(0, 150));
+        CreateSettingsTitle(settingsPanel.transform, "SETTINGS", new Vector2(0, 190));
 
-        // Volume Section
-        CreateSettingsLabel(settingsPanel.transform, "Master Volume", new Vector2(-120, 70));
-        CreateStyledSlider(settingsPanel.transform, "VolumeSlider", new Vector2(80, 70), AudioListener.volume, OnVolumeChanged);
+        // Master Volume Section
+        CreateSettingsLabel(settingsPanel.transform, "Master Volume", new Vector2(-120, 110));
+        CreateStyledSlider(settingsPanel.transform, "VolumeSlider", new Vector2(80, 110), AudioListener.volume, OnVolumeChanged);
+
+        // Music Volume Section
+        CreateSettingsLabel(settingsPanel.transform, "Music Volume", new Vector2(-120, 40));
+        float savedMusic = PlayerPrefs.GetFloat("MusicVolume", 0.5f);
+        CreateStyledSlider(settingsPanel.transform, "MusicSlider", new Vector2(80, 40), savedMusic, OnMusicVolumeChanged);
 
         // Sensitivity Section
-        CreateSettingsLabel(settingsPanel.transform, "Mouse Sensitivity", new Vector2(-100, 0));
+        CreateSettingsLabel(settingsPanel.transform, "Mouse Sensitivity", new Vector2(-100, -30));
         float savedSens = PlayerPrefs.GetFloat("MouseSensitivity", 300f);
-        CreateStyledSlider(settingsPanel.transform, "SensSlider", new Vector2(80, 0), (savedSens - 100f) / 500f, OnSensitivityChanged);
+        CreateStyledSlider(settingsPanel.transform, "SensSlider", new Vector2(80, -30), (savedSens - 100f) / 500f, OnSensitivityChanged);
 
         // Back Button
-        CreateStyledButton(settingsPanel.transform, "BackButton", "BACK", new Vector2(0, -120), OnBackClicked);
+        CreateStyledButton(settingsPanel.transform, "BackButton", "BACK", new Vector2(0, -150), OnBackClicked);
 
         settingsPanel.SetActive(false);
     }
@@ -492,6 +505,15 @@ public class MainMenu : MonoBehaviour
         Time.timeScale = 1f;
         menuCanvas.gameObject.SetActive(false);
         settingsPanel.SetActive(false);
+
+        // ascunde cursorul in gameplay
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        // muzica la volum plin in gameplay
+        if (MusicManager.Instance != null)
+            MusicManager.Instance.OnEnterGameplay();
+
         mainScript.StartGame();
     }
 
@@ -525,6 +547,14 @@ public class MainMenu : MonoBehaviour
     {
         isGameStarted = true;
         isPaused = false;
+
+        // ascunde cursorul in gameplay
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        // muzica la volum plin in gameplay
+        if (MusicManager.Instance != null)
+            MusicManager.Instance.OnEnterGameplay();
     }
 
     void OnSettingsClicked()
@@ -564,6 +594,14 @@ public class MainMenu : MonoBehaviour
         if (player != null)
         {
             player.mouseSens = sensitivity;
+        }
+    }
+
+    void OnMusicVolumeChanged(float value)
+    {
+        if (MusicManager.Instance != null)
+        {
+            MusicManager.Instance.SetVolume(value);
         }
     }
 
