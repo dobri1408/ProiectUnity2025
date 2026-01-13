@@ -4,6 +4,7 @@ public class WinTrigger : MonoBehaviour
 {
     TimerUI timer; // Time used for star reward.
 
+    // Initializes the win flag by finding the timer component in the scene.
     void Start()
     {
         GameObject timerObject = GameObject.Find("Timer");
@@ -13,9 +14,8 @@ public class WinTrigger : MonoBehaviour
         }
     }
 
-    // On player collision
-    // Ignore if checkpoints are used.
-    // Creates a WinMenu obj and gives level, time as arg
+    // Handles player collision with the win flag. Displays the win menu and records level completion time.
+    // Ignores if player cheated or if timer component is not found.
     void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player"))

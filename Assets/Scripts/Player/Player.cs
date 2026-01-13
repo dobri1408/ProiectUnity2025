@@ -88,7 +88,7 @@ public class Player : MonoBehaviour
         footstepsAudioSource.playOnAwake = false;
         footstepsAudioSource.spatialBlend = 0f; // 2D sound
 
-        // Verifică dacă clipurile audio sunt setate
+        // Check if audio clips are assigned
         if (windSound != null)
         {
             windAudioSource.Play();
@@ -116,6 +116,7 @@ public class Player : MonoBehaviour
         HandleAudio();
     }
 
+    // FixedUpdate is called for physics calculations. Handles movement, hand positioning, and stamina.
     void FixedUpdate()
     {
         CheckGrounded();
@@ -124,6 +125,7 @@ public class Player : MonoBehaviour
         HandleStamina(); // call after hand for Anchored status
     }
 
+    // Checks if the player is grounded using raycast and sphere cast for better accuracy.
     void CheckGrounded()
     {
         RaycastHit hit;
@@ -145,6 +147,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    // Handles camera rotation based on mouse input.
     void HandleMouse()
     {
         float mouseX = Input.GetAxis("Mouse X") * mouseSens * Time.deltaTime;
@@ -156,6 +159,7 @@ public class Player : MonoBehaviour
         camTransform.localRotation = Quaternion.Euler(camX, 0f, 0f);
     }
 
+    // Handles player movement based on input. Applies force, damping, and speed limits.
     void HandleMovement()
     {
         float h = Input.GetAxisRaw("Horizontal");
@@ -186,11 +190,12 @@ public class Player : MonoBehaviour
         }
     }
 
+    // Manages the hand position and player attachment to climbing surfaces.
     void HandleHand()
     {
         if (!handObj.isAnchored)
         {
-            // Salveaza viteza pentru momentum boost cand face grab
+            // Save velocity for momentum boost when grabbing
             velocityBeforeGrab = rb.linearVelocity;
 
             Vector3 handPos = transform.position + camTransform.forward * handDist;
@@ -203,7 +208,7 @@ public class Player : MonoBehaviour
             Vector3 target = playerPos - transform.position;
             Vector3 newVelocity = Vector3.Lerp(rb.linearVelocity, target * 10, handDamp);
 
-            // Aplica momentum boost doar la inceputul grab-ului
+            // Apply momentum boost only at the beginning of grab
             if (!wasAnchored)
             {
                 newVelocity += velocityBeforeGrab * momentumBoost;
@@ -212,7 +217,7 @@ public class Player : MonoBehaviour
             rb.linearVelocity = newVelocity;
         }
 
-        // Update starea anterioara
+        // Update previous state
         wasAnchored = handObj.isAnchored;
 
         float dist = Vector3.Distance(hand.transform.position, transform.position);
@@ -223,6 +228,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    // Manages wind and footstep audio based on player speed and grounded state.
     void HandleAudio()
     {
         if (windAudioSource == null || footstepsAudioSource == null) return;
@@ -231,7 +237,7 @@ public class Player : MonoBehaviour
         float horizontalSpeed = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z).magnitude;
         float verticalSpeed = Mathf.Abs(rb.linearVelocity.y);
 
-        // Wind sound - se aude când ești în aer SAU când ai viteză verticală mare (săritura)
+        // Wind sound - plays when in air OR when jumping (large vertical velocity)
         bool shouldPlayWind = (!isGrounded || verticalSpeed > 0.5f) && currentSpeed > windVelocityThreshold;
 
         if (shouldPlayWind)
@@ -241,21 +247,21 @@ public class Player : MonoBehaviour
                 windAudioSource.Play();
             }
 
-            // Calculează volumul bazat pe viteză - volum minim mai mare pentru a se auzi mereu
+            // Calculate volume based on velocity - minimum volume to be heard always
             float velocityRatio = Mathf.Clamp01((currentSpeed - windVelocityThreshold) / (maxWindVelocity - windVelocityThreshold));
-            // Volum între 0.3 și maxWindVolume pentru a se auzi mai bine
+            // Volume between 0.3 and maxWindVolume for better hearing
             float targetVolume = Mathf.Lerp(0.3f, maxWindVolume, velocityRatio);
 
-            // Fade in foarte rapid pentru răspuns instant
+            // Fade in very quickly for instant response
             windAudioSource.volume = Mathf.Lerp(windAudioSource.volume, targetVolume, Time.deltaTime * 20f);
         }
         else
         {
-            // Fade out rapid când aterizezi
+            // Fade out quickly when landing
             windAudioSource.volume = Mathf.Lerp(windAudioSource.volume, 0f, Time.deltaTime * 12f);
         }
 
-        // Footsteps sound - doar când ești pe pământ și te miști orizontal (fără viteză verticală mare)
+        // Footsteps sound - only when grounded and moving horizontally (without large vertical velocity)
         bool shouldPlayFootsteps = isGrounded && horizontalSpeed > 0.05f && verticalSpeed < 0.5f;
 
         if (shouldPlayFootsteps)
@@ -265,19 +271,20 @@ public class Player : MonoBehaviour
                 footstepsAudioSource.Play();
             }
 
-            // Volume based on horizontal speed - volum minim mai mare
+            // Volume based on horizontal speed - minimum volume to be heard always
             float speedRatio = Mathf.Clamp01(horizontalSpeed / maxSpeed);
-            // Volum între 0.4 și footstepVolume pentru a se auzi mereu când mergi
+            // Volume between 0.4 and footstepVolume to be heard always while walking
             float targetFootstepVolume = Mathf.Lerp(0.4f, footstepVolume, speedRatio);
             footstepsAudioSource.volume = Mathf.Lerp(footstepsAudioSource.volume, targetFootstepVolume, Time.deltaTime * 15f);
         }
         else
         {
-            // Fade out rapid când te oprești sau sari
+            // Fade out quickly when stopping or jumping
             footstepsAudioSource.volume = Mathf.Lerp(footstepsAudioSource.volume, 0f, Time.deltaTime * 18f);
         }
     }
 
+    // Manages stamina regeneration and depletion based on climbing state.
     void HandleStamina()
     {
         if(handObj.isAnchored) {

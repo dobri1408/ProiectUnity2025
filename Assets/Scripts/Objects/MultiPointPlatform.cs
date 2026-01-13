@@ -6,7 +6,7 @@ public class MultiPointPlatform : MonoBehaviour
     public float speed = 2f; // linear velocity of movement
     public bool loop = true; // one-shot if false or loop if true
 
-    [Tooltip("Timpul de pauză la fiecare punct (secunde)")]
+    [Tooltip("Wait time at each point (seconds)")]
     public float waitTime = 10f; // wait time once target point is reached
 
     private int index = 0;
@@ -68,7 +68,7 @@ public class MultiPointPlatform : MonoBehaviour
         }
     }
 
-    // Tine jucatorul pe platforma
+    // holds player on platform when colliding
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Player"))

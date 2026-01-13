@@ -22,12 +22,14 @@ public class Hand : MonoBehaviour
         "TestMat",
     };
 
+    // Initializes hand component and finds player reference.
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         playerObj = transform.parent.GetComponentInChildren<Player>(); 
     }
 
+    // Handles grabbing to climbable surfaces when mouse button is held and conditions are met.
     void OnCollisionStay(Collision collision)
     {
         // if player is holding and is able to hold, create a tracker for mouse position
@@ -41,7 +43,7 @@ public class Hand : MonoBehaviour
         }
     }
 
-    // if hand is too far to hold
+    // Checks if hand is within valid grabbing distance from player.
     private bool IsWithinHandDistance()
     {
         if (player == null) return false;
@@ -56,7 +58,7 @@ public class Hand : MonoBehaviour
         return false;
     }
 
-    // checks for material name in hashset
+    // Checks if a game object has a climbable material.
     private bool isGrabableMat(GameObject obj)
     {
         if (obj == null) return false;
