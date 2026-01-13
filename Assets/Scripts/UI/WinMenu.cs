@@ -9,6 +9,9 @@ public class WinMenu : MonoBehaviour
     // List of times for 1…4 stars (in milliseconds) per level
     public Dictionary<string, List<int>> timesDict = new Dictionary<string, List<int>>();
 
+    private string currentLevelName;
+    private bool hasNextLevel = false;
+
     void Awake()
     {
         // Time thresholds for stars (in milliseconds) - faster = more stars
@@ -20,6 +23,7 @@ public class WinMenu : MonoBehaviour
 
     public void Initialize(string levelName, int timeInMilliseconds)
     {
+        currentLevelName = levelName;
         DisplayTime(timeInMilliseconds);
 
         int stars = CalculateStars(levelName, timeInMilliseconds);
@@ -31,6 +35,10 @@ public class WinMenu : MonoBehaviour
         {
             GameSaveManager.Instance.CompleteLevel(levelName, timeInMilliseconds, stars);
         }
+
+        // Check if there's a next level
+        hasNextLevel = GetNextLevelName() != null;
+        SetupNextLevelButton();
 
         Cursor.lockState = CursorLockMode.None; // Unlocks the cursor
         Cursor.visible = true;                  // Makes the cursor visible
@@ -163,5 +171,81 @@ public class WinMenu : MonoBehaviour
     public void LoadMainScene()
     {
         SceneManager.LoadScene("Main");
+    }
+
+    private string GetNextLevelName()
+    {
+        string[] levels = GameSaveManager.AvailableLevels;
+        for (int i = 0; i < levels.Length - 1; i++)
+        {
+            if (levels[i] == currentLevelName)
+            {
+                return levels[i + 1];
+            }
+        }
+        return null; // No next level (last level)
+    }
+
+    private void SetupNextLevelButton()
+    {
+        if (!hasNextLevel) return;
+
+        Transform panelTransform = transform.GetChild(0);
+
+        // Find MainMenu button and replace it with Next Level
+        Transform menuBtn = panelTransform.Find("MainMenu");
+        if (menuBtn == null) return;
+
+        // Update text to show next level
+        TextMeshProUGUI btnText = menuBtn.GetComponentInChildren<TextMeshProUGUI>();
+        if (btnText != null)
+        {
+            btnText.text = "Next: " + GetNextLevelName();
+        }
+
+        // Replace click event
+        Button btn = menuBtn.GetComponent<Button>();
+        if (btn != null)
+        {
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(OnNextLevelClicked);
+        }
+    }
+
+    public void OnNextLevelClicked()
+    {
+        string nextLevel = GetNextLevelName();
+        if (nextLevel == null) return;
+
+        Main mainScript = FindObjectOfType<Main>();
+        if (mainScript != null)
+        {
+            // Ascunde meniul principal explicit
+            GameObject mainMenuCanvas = GameObject.Find("MainMenuCanvas");
+            if (mainMenuCanvas != null)
+            {
+                mainMenuCanvas.SetActive(false);
+            }
+
+            // Seteaza starea jocului
+            MainMenu mainMenu = FindObjectOfType<MainMenu>();
+            if (mainMenu != null)
+            {
+                mainMenu.OnLevelStarted();
+            }
+
+            // Asigura-te ca timpul ruleaza
+            Time.timeScale = 1f;
+
+            // Ascunde cursorul
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+            // Distruge WinMenu INAINTE de a incarca noul nivel
+            Destroy(gameObject);
+
+            // Incarca nivelul
+            mainScript.loadLevel(nextLevel, true);
+        }
     }
 }

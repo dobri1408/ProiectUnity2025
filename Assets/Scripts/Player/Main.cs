@@ -40,12 +40,24 @@ public class Main : MonoBehaviour
         // Foloseste incarcare asincrona
         loadingScreen.LoadLevelAsync(name, (levelPrefab, playerPrefab, uiPrefab) =>
         {
+            // Ascunde meniul principal (in caz ca e vizibil)
+            GameObject mainMenuCanvas = GameObject.Find("MainMenuCanvas");
+            if (mainMenuCanvas != null)
+            {
+                mainMenuCanvas.SetActive(false);
+            }
+
             // Instantiaza dupa ce totul s-a incarcat
             Instantiate(levelPrefab, Vector3.zero, Quaternion.identity);
             Instantiate(playerPrefab, new Vector3(0, 1, 0), Quaternion.identity);
 
             GameObject uiInstance = Instantiate(uiPrefab, Vector3.zero, Quaternion.identity);
             uiInstance.transform.Find("LevelName").GetComponent<TextMeshProUGUI>().text = name;
+
+            // Asigura-te ca jocul ruleaza si cursorul e blocat
+            Time.timeScale = 1f;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         });
     }
 

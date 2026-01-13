@@ -543,10 +543,15 @@ public class MainMenu : MonoBehaviour
         }
     }
 
-    void OnLevelStarted()
+    public void OnLevelStarted()
     {
         isGameStarted = true;
         isPaused = false;
+        Time.timeScale = 1f;
+
+        // ascunde meniul
+        menuCanvas.gameObject.SetActive(false);
+        settingsPanel.SetActive(false);
 
         // ascunde cursorul in gameplay
         Cursor.lockState = CursorLockMode.Locked;
