@@ -58,7 +58,7 @@ La această etapă, proiectul conține:
 
 ---
 
-## � Sisteme de Joc
+## 🛠️ Sisteme de Joc
 
 Proiectul include următoarele sisteme și mecanici implementate:
 
@@ -71,7 +71,7 @@ Proiectul include următoarele sisteme și mecanici implementate:
 - **Fizică realista** - Utilizează RigidBody și PhysicMaterial pentru interacțiuni naturale [`Assets/Scripts/Player/Player.physicMaterial`]
 
 
-### 🎮 Obiecte și Mecanici de Nivel
+### ⚙️ Obiecte și Mecanici de Nivel
 
 - **Platforme Rotative** - Se rotesc constant, complicând traversarea [`Assets/Scripts/Objects/Spinner.cs`]
 - **Platforme Mobile** - Se deplasează pe o cale predefinită cu pauze la fiecare punct [`Assets/Scripts/Objects/MultiPointPlatform.cs`]
@@ -104,7 +104,7 @@ Proiectul include următoarele sisteme și mecanici implementate:
 
 ---
 
-## �📞 Feedback și Review
+## 🤝📞 Feedback și Review
 
 Pentru orice sugestii, rapoarte de bug-uri sau feedback:
 
