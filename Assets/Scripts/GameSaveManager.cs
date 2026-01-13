@@ -60,7 +60,7 @@ public class GameSaveManager : MonoBehaviour
     public GameSaveData saveData;
 
     // Define available levels (can be extended)
-    public static readonly string[] AvailableLevels = { "Tutorial", "Level1" };
+    public static readonly string[] AvailableLevels = { "Tutorial", "Level 1" };
 
     void Awake()
     {

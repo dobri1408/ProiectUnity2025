@@ -22,6 +22,7 @@ public class Player : MonoBehaviour
     public float handDist = 2f;
     public float maxHandDist = 3.5f;
     public float handDamp = 0.7f;
+    public float momentumBoost = 0.5f; // cat din viteza de alergare se adauga la swing
     [Header("Stamina")]
     public float maxStamina = 1f;
     private float staminaRegenMult = 0.35f;
@@ -48,6 +49,10 @@ public class Player : MonoBehaviour
     private bool isGrounded;
     private float footstepTimer;
     public bool cheated = false;
+
+    // Momentum grab
+    private Vector3 velocityBeforeGrab;
+    private bool wasAnchored = false;
 
     void Start()
     {
@@ -185,6 +190,9 @@ public class Player : MonoBehaviour
     {
         if (!handObj.isAnchored)
         {
+            // Salveaza viteza pentru momentum boost cand face grab
+            velocityBeforeGrab = rb.linearVelocity;
+
             Vector3 handPos = transform.position + camTransform.forward * handDist;
             Vector3 target = handPos - hand.transform.position;
             hand.linearVelocity = Vector3.Lerp(hand.linearVelocity, target * 10, handDamp);
@@ -193,8 +201,19 @@ public class Player : MonoBehaviour
         {
             Vector3 playerPos = hand.transform.position + camTransform.forward * -handDist;
             Vector3 target = playerPos - transform.position;
-            rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, target * 10, handDamp);
+            Vector3 newVelocity = Vector3.Lerp(rb.linearVelocity, target * 10, handDamp);
+
+            // Aplica momentum boost doar la inceputul grab-ului
+            if (!wasAnchored)
+            {
+                newVelocity += velocityBeforeGrab * momentumBoost;
+            }
+
+            rb.linearVelocity = newVelocity;
         }
+
+        // Update starea anterioara
+        wasAnchored = handObj.isAnchored;
 
         float dist = Vector3.Distance(hand.transform.position, transform.position);
         if (dist > maxHandDist)
