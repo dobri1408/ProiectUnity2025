@@ -21,7 +21,16 @@ public class WinTrigger : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        bool cheated = other.GetComponent<Player>().cheated;
+        // Player component is on Body child, not root
+        Player playerComponent = other.GetComponent<Player>();
+        if (playerComponent == null)
+            playerComponent = other.GetComponentInChildren<Player>();
+        if (playerComponent == null)
+            playerComponent = other.GetComponentInParent<Player>();
+
+        if (playerComponent == null) return;
+
+        bool cheated = playerComponent.cheated;
         if(cheated) {
             Debug.Log("Cheated run");            
             return;

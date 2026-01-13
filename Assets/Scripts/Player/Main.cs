@@ -46,6 +46,12 @@ public class Main : MonoBehaviour
 
             GameObject uiInstance = Instantiate(uiPrefab, Vector3.zero, Quaternion.identity);
             uiInstance.transform.Find("LevelName").GetComponent<TextMeshProUGUI>().text = name;
+
+            // Seteaza starea jocului dupa incarcare
+            if (MainMenu.Instance != null)
+            {
+                MainMenu.Instance.OnLevelStarted();
+            }
         });
     }
 
@@ -61,6 +67,12 @@ public class Main : MonoBehaviour
         GameObject uiPrefab = Resources.Load<GameObject>("UIs/UI");
         GameObject uiInstance = Instantiate(uiPrefab, Vector3.zero, Quaternion.identity);
         uiInstance.transform.Find("LevelName").GetComponent<TextMeshProUGUI>().text = name;
+
+        // Seteaza starea jocului
+        if (MainMenu.Instance != null)
+        {
+            MainMenu.Instance.OnLevelStarted();
+        }
     }
 
     void ClearLevel()

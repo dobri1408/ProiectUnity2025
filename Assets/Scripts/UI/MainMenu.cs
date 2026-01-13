@@ -4,6 +4,8 @@ using TMPro;
 
 public class MainMenu : MonoBehaviour
 {
+    public static MainMenu Instance { get; private set; }
+
     private Canvas menuCanvas;
     private GameObject mainPanel;
     private GameObject settingsPanel;
@@ -11,6 +13,11 @@ public class MainMenu : MonoBehaviour
     private Main mainScript;
     private bool isGameStarted = false;
     private bool isPaused = false;
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -34,6 +41,8 @@ public class MainMenu : MonoBehaviour
         {
             Time.timeScale = 0f;
             menuCanvas.gameObject.SetActive(true);
+            mainPanel.SetActive(true);
+            settingsPanel.SetActive(false);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
@@ -500,17 +509,32 @@ public class MainMenu : MonoBehaviour
 
     void OnPlayClicked()
     {
+        // Daca jocul e deja pornit (suntem in pauza), doar reluam
+        if (isGameStarted)
+        {
+            isPaused = false;
+            Time.timeScale = 1f;
+            menuCanvas.gameObject.SetActive(false);
+            settingsPanel.SetActive(false);
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+            if (MusicManager.Instance != null)
+                MusicManager.Instance.OnEnterGameplay();
+            return;
+        }
+
+        // Altfel, pornim un joc nou
         isGameStarted = true;
         isPaused = false;
         Time.timeScale = 1f;
         menuCanvas.gameObject.SetActive(false);
         settingsPanel.SetActive(false);
 
-        // ascunde cursorul in gameplay
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // muzica la volum plin in gameplay
         if (MusicManager.Instance != null)
             MusicManager.Instance.OnEnterGameplay();
 
@@ -543,10 +567,15 @@ public class MainMenu : MonoBehaviour
         }
     }
 
-    void OnLevelStarted()
+    public void OnLevelStarted()
     {
         isGameStarted = true;
         isPaused = false;
+        Time.timeScale = 1f;
+
+        // ascunde meniul
+        menuCanvas.gameObject.SetActive(false);
+        settingsPanel.SetActive(false);
 
         // ascunde cursorul in gameplay
         Cursor.lockState = CursorLockMode.Locked;
