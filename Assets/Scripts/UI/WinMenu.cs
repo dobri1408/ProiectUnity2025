@@ -220,18 +220,10 @@ public class WinMenu : MonoBehaviour
         Main mainScript = FindObjectOfType<Main>();
         if (mainScript != null)
         {
-            // Ascunde meniul principal explicit
-            GameObject mainMenuCanvas = GameObject.Find("MainMenuCanvas");
-            if (mainMenuCanvas != null)
+            // Foloseste singleton-ul MainMenu
+            if (MainMenu.Instance != null)
             {
-                mainMenuCanvas.SetActive(false);
-            }
-
-            // Seteaza starea jocului
-            MainMenu mainMenu = FindObjectOfType<MainMenu>();
-            if (mainMenu != null)
-            {
-                mainMenu.OnLevelStarted();
+                MainMenu.Instance.OnLevelStarted();
             }
 
             // Asigura-te ca timpul ruleaza
@@ -241,7 +233,7 @@ public class WinMenu : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            // Distruge WinMenu INAINTE de a incarca noul nivel
+            // Distruge WinMenu
             Destroy(gameObject);
 
             // Incarca nivelul
