@@ -60,7 +60,7 @@ public class GameSaveManager : MonoBehaviour
     public GameSaveData saveData;
 
     // Define available levels (can be extended)
-    public static readonly string[] AvailableLevels = { "Tutorial", "Level1", "Level2", "Level3" };
+    public static readonly string[] AvailableLevels = { "Tutorial", "Level1" };
 
     void Awake()
     {
@@ -99,7 +99,8 @@ public class GameSaveManager : MonoBehaviour
         saveData.levels.Clear();
         for (int i = 0; i < AvailableLevels.Length; i++)
         {
-            LevelData levelData = new LevelData(AvailableLevels[i], i == 0); // Only first level unlocked
+            // Toate nivelele sunt deblocate implicit
+            LevelData levelData = new LevelData(AvailableLevels[i], true);
             saveData.levels.Add(levelData);
         }
     }
@@ -108,9 +109,16 @@ public class GameSaveManager : MonoBehaviour
     {
         foreach (string levelName in AvailableLevels)
         {
-            if (GetLevelData(levelName) == null)
+            LevelData existing = GetLevelData(levelName);
+            if (existing == null)
             {
-                saveData.levels.Add(new LevelData(levelName, levelName == "Tutorial"));
+                // Nivelele noi sunt deblocate implicit
+                saveData.levels.Add(new LevelData(levelName, true));
+            }
+            else
+            {
+                // Deblocheaza nivelele existente
+                existing.isUnlocked = true;
             }
         }
     }
