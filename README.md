@@ -1,60 +1,69 @@
-# ASCENT
+# 🏔️ ASCENT
 
-**Un joc de alpinism singleplayer dezvoltat in Unity**
-
----
-
-## Despre Joc
-
-**ASCENT** este un joc single-player de escaladat unde trebuie sa scalezi diverse nivele periculoase. Fiecare greseala te poate trimite la inceput. Ai determinarea sa ajungi la varful celor mai grele nivele?
+**Un joc de alpinism singleplayer provocator dezvoltat în Unity**
 
 ---
 
-## Caracteristici
+## 📋 Prezentare
 
-- **Escaladare realista** - Sistem de climbing cu management stamina
-- **Provocari contra timp** - Bate-ti propriile recorduri
-- **Personalizare** - Customizeaza-ti personajul
+Acest proiect reprezintă un joc provocator de escaladare dezvoltat cu **Unity 6.2 LTS**.
 
----
-
-## Detalii Proiect
-
-### Tipul Jocului
-
-- 3D
-- Level Based
-- Exploration (Find your own path to victory)
-- Speedrunning (Beat your records)
-- Single-player
-
-### Jocuri Similare
-
-- **PEAK** - Climbing mechanics
-- **Getting Over It** - Precision platforming
-- **Celeste** - Challenging climbing gameplay
-- **A Difficult Game About Climbing** - Physics-based climbing
+**ASCENT** este un joc single-player de escaladare unde trebuie să navighezi prin diverse nivele periculoase. Fiecare greșeală te poate trimite la început. Ai determinarea să ajungi la vârful celor mai grele nivele?
 
 ---
 
-## Instalare
+## ✨ Caracteristici Principale
 
-Cloneaza repo-ul:
+La această etapă, proiectul conține:
 
+- **⛏️ Escaladare realistă** — Sistem de climbing cu management al staminei
+- **⏱️ Provocări contra timp** — Bate-ți propriile recorduri și speedrun nivelurile
+- **👤 Personalizare** — Customizează-ți personajul după preferințe
+- **🎮 Gameplay 3D Level-Based** — Explorare liberă pentru a găsi drumul tău către victorie
+- **🏃 Explorare și Speedrunning** — Găsește calea ta și bate recordurile
+
+### 🎯 Jocuri Similare de Inspirație
+
+- **PEAK** — Mecanici de escaladare
+- **Getting Over It** — Platforming de precizie
+- **Celeste** — Gameplay provocator de escaladare
+- **A Difficult Game About Climbing** — Escaladare bazată pe fizică
+
+---
+
+## 🚀 Cum Se Instalează și Se Rulează
+
+### Setup-ul proiectului
+
+1. **Clonează repo-ul:**
    ```bash
    git clone https://github.com/dobri1408/ProiectUnity2025
    ```
 
-Deschide in Unity Hub (Unity 6.2)
+2. **Deschide în Unity Hub** — Utilizează **Unity 6.2** sau mai nou
 
-Deschide scena `Assets/Scenes/Main.unity` (Poate dura pana se incarca materialele)
+3. **Încarcă scena principală:**
+   - Accesează `Assets/Scenes/Main.unity`
+   - Poate dura puțin până se încarcă materialele și texturile
 
-Controalele sunt:
-
--WASD Miscare orizontala.
-
--LeftClick pentru apucarea de pereti (Climbing) 
+4. **Apasă Play** în Unity Editor pentru a testa jocul
 
 ---
 
-**Review** catre serbanandrei1338@gmail.com sau teams andrei.serban7@s.unibuc.ro
+## 🎮 Comenzi de Control
+
+| **Mișcare orizontală** | `W` `A` `S` `D` |
+
+| **Apucare pereți** (Climbing) | `Left Click` |
+
+---
+
+## 📞 Feedback și Review
+
+Pentru orice sugestii, rapoarte de bug-uri sau feedback:
+
+- **Email:** serbanandrei1338@gmail.com
+- **Microsoft Teams:** andrei.serban7@s.unibuc.ro
+
+---
+
