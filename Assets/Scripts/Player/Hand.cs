@@ -24,6 +24,7 @@ public class Hand : MonoBehaviour
         "StoneBrick",
         "Rock",
         "TestMat",
+        "Blend",
     };
 
     // Initializes hand component and finds player reference.
