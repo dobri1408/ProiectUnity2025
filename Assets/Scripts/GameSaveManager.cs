@@ -41,6 +41,12 @@ public class GameSaveData
 
 public class GameSaveManager : MonoBehaviour
 {
+    // Save system constants
+    private const string SAVE_KEY = "GameSaveData";
+    private const float defaultMouseSensitivity = 300f;
+    private const int millisecondsPerMinute = 60000;
+    private const int millisecondsPerSecond = 1000;
+
     private static GameSaveManager _instance;
     public static GameSaveManager Instance
     {
@@ -56,7 +62,6 @@ public class GameSaveManager : MonoBehaviour
         }
     }
 
-    private const string SAVE_KEY = "GameSaveData";
     public GameSaveData saveData;
 
     // Define available levels (can be extended)
@@ -131,7 +136,7 @@ public class GameSaveManager : MonoBehaviour
     public void SaveGame()
     {
         saveData.masterVolume = AudioListener.volume;
-        saveData.mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 300f);
+        saveData.mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", defaultMouseSensitivity);
 
         string json = JsonUtility.ToJson(saveData, true);
         PlayerPrefs.SetString(SAVE_KEY, json);
@@ -185,27 +190,31 @@ public class GameSaveManager : MonoBehaviour
         SaveGame();
     }
 
+    // Recalculates total stars earned across all levels
     void RecalculateTotalStars()
     {
         int total = 0;
-        foreach (LevelData level in saveData.levels)
+        for (int i = 0; i < saveData.levels.Count; i++)
         {
-            total += level.bestStars;
+            total += saveData.levels[i].bestStars;
         }
         saveData.totalStars = total;
     }
 
+    // Checks if a level is unlocked for playing
     public bool IsLevelUnlocked(string levelName)
     {
         LevelData data = GetLevelData(levelName);
         return data != null && data.isUnlocked;
     }
 
+    // Returns the total number of stars earned
     public int GetTotalStars()
     {
         return saveData.totalStars;
     }
 
+    // Resets all game progress and saves
     public void ResetAllProgress()
     {
         PlayerPrefs.DeleteKey(SAVE_KEY);
@@ -215,12 +224,13 @@ public class GameSaveManager : MonoBehaviour
         Debug.Log("All progress reset!");
     }
 
+    // Formats milliseconds into MM:SS:mmm format
     public string FormatTime(int timeMs)
     {
         if (timeMs < 0) return "--:--:---";
-        int minutes = timeMs / 60000;
-        int seconds = (timeMs % 60000) / 1000;
-        int milliseconds = timeMs % 1000;
+        int minutes = timeMs / millisecondsPerMinute;
+        int seconds = (timeMs % millisecondsPerMinute) / millisecondsPerSecond;
+        int milliseconds = timeMs % millisecondsPerSecond;
         return string.Format("{0:D2}:{1:D2}:{2:D3}", minutes, seconds, milliseconds);
     }
 }

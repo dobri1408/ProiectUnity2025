@@ -83,12 +83,13 @@ public class Hand : MonoBehaviour
     {
         if (player == null) return false;
         
-        float distance = Vector3.Distance(transform.position, player.position);
+        float distanceSqr = (transform.position - player.position).sqrMagnitude;
         Player p = player.GetComponent<Player>();
         
         if (p != null)
         {
-            return distance <= p.handDist * grabableDistanceMultiplier;
+            float maxDistSqr = p.handDist * grabableDistanceMultiplier;
+            return distanceSqr <= maxDistSqr * maxDistSqr;
         }
         return false;
     }
@@ -114,16 +115,17 @@ public class Hand : MonoBehaviour
     void FixedUpdate()
     {
         if(!IsWithinHandDistance()) setAnchored(false);
+        Renderer renderer = GetComponent<Renderer>();
         if (isAnchored && Input.GetMouseButton(0) && playerObj.exhausted == false)
         {
             rb.linearVelocity = Vector3.zero;
-            gameObject.GetComponent<Renderer>().material.color = Color.gray;
+            renderer.material.color = Color.gray;
             transform.position = tracker.position;
             transform.rotation = tracker.rotation;
         }
         else
         {
-            gameObject.GetComponent<Renderer>().material.color = Color.white; // reset color
+            renderer.material.color = Color.white; // reset color
             if (tracker != null) Destroy(tracker.gameObject);
             if( isAnchored ) setAnchored(false);
             collObj = null; // free reference and tracker

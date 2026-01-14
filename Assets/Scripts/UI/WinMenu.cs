@@ -6,6 +6,10 @@ using UnityEngine.SceneManagement;
 
 public class WinMenu : MonoBehaviour
 {
+    // Time conversion constants (in milliseconds)
+    private const int millisecondsPerMinute = 60000;
+    private const int millisecondsPerSecond = 1000;
+
     // List of times for 1…4 stars (in milliseconds) per level
     public Dictionary<string, List<int>> timesDict = new Dictionary<string, List<int>>();
 
@@ -21,6 +25,7 @@ public class WinMenu : MonoBehaviour
         timesDict["Level 3"] = new List<int> { 120000, 90000, 60000, 45000 };
     }
 
+    // Initializes win menu display with level completion data
     public void Initialize(string levelName, int timeInMilliseconds)
     {
         currentLevelName = levelName;
@@ -44,11 +49,12 @@ public class WinMenu : MonoBehaviour
         Cursor.visible = true;                  // Makes the cursor visible
     }
 
+    // Displays the elapsed time in MM:SS:mmm format
     void DisplayTime(int timeInMilliseconds)
     {
-        int minutes = timeInMilliseconds / 60000;
-        int seconds = (timeInMilliseconds % 60000) / 1000;
-        int milliseconds = timeInMilliseconds % 1000;
+        int minutes = timeInMilliseconds / millisecondsPerMinute;
+        int seconds = (timeInMilliseconds % millisecondsPerMinute) / millisecondsPerSecond;
+        int milliseconds = timeInMilliseconds % millisecondsPerSecond;
 
         string timeText = string.Format("{0:D2}:{1:D2}:{2:D3}", minutes, seconds, milliseconds);
 
@@ -62,6 +68,7 @@ public class WinMenu : MonoBehaviour
         }
     }
 
+    // Calculates number of stars earned based on time threshold
     int CalculateStars(string levelName, int timeInMilliseconds)
     {
         if (!timesDict.ContainsKey(levelName))
@@ -73,9 +80,9 @@ public class WinMenu : MonoBehaviour
         List<int> thresholds = timesDict[levelName];
         int stars = 0;
 
-        foreach (int t in thresholds)
+        for (int i = 0; i < thresholds.Count; i++)
         {
-            if (timeInMilliseconds <= t)
+            if (timeInMilliseconds <= thresholds[i])
                 stars++;
         }
         Debug.Log(stars);
@@ -83,6 +90,7 @@ public class WinMenu : MonoBehaviour
         return stars;
     }
 
+    // Displays the time required for the next star threshold
     public void DisplayNextStar(int starsEarned, string levelName)
     {
         // Get panel
@@ -118,9 +126,9 @@ public class WinMenu : MonoBehaviour
         {
             int nextThreshold = thresholds[starsEarned];
             // Convert milliseconds to seconds:minutes if desired
-            int minutes = nextThreshold / 60000;
-            int seconds = (nextThreshold % 60000) / 1000;
-            int milliseconds = nextThreshold % 1000;
+            int minutes = nextThreshold / millisecondsPerMinute;
+            int seconds = (nextThreshold % millisecondsPerMinute) / millisecondsPerSecond;
+            int milliseconds = nextThreshold % millisecondsPerSecond;
 
             string formatted = string.Format("{0:D2}:{1:D2}:{2:D3}", minutes, seconds, milliseconds);
             nextTimeText.text = "Time to next star: " + formatted;
@@ -131,6 +139,7 @@ public class WinMenu : MonoBehaviour
         }
     }
 
+    // Updates star visual colors based on stars earned
     void SetStarColors(int starsEarned)
     {
         Transform panelTransform = transform.GetChild(0); // Panel
@@ -220,23 +229,23 @@ public class WinMenu : MonoBehaviour
         Main mainScript = FindObjectOfType<Main>();
         if (mainScript != null)
         {
-            // Foloseste singleton-ul MainMenu
+            // Use MainMenu singleton
             if (MainMenu.Instance != null)
             {
                 MainMenu.Instance.OnLevelStarted();
             }
 
-            // Asigura-te ca timpul ruleaza
+            // Ensure time is running
             Time.timeScale = 1f;
 
-            // Ascunde cursorul
+            // Hide cursor
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            // Distruge WinMenu
+            // Destroy WinMenu
             Destroy(gameObject);
 
-            // Incarca nivelul
+            // Load next level
             mainScript.loadLevel(nextLevel, true);
         }
     }

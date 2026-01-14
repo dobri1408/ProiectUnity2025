@@ -36,6 +36,7 @@ public class ButtonAnimator : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     private bool isHovered = false;
     private bool isPressed = false;
 
+    // Initializes button animation colors and prepares hover/press states.
     void Awake()
     {
         originalScale = transform.localScale;
@@ -159,7 +160,7 @@ public class PulsingGlow : MonoBehaviour
     }
 }
 
-// Slide in animation for UI elements
+// Slide in animation for UI elements with directional movement and easing
 public class SlideInAnimation : MonoBehaviour
 {
     public enum SlideDirection { Left, Right, Top, Bottom }
@@ -221,7 +222,7 @@ public class SlideInAnimation : MonoBehaviour
     }
 }
 
-// Fade in animation
+// Fade in animation with smooth alpha transition from transparent to opaque.
 public class FadeInAnimation : MonoBehaviour
 {
     public float duration = 0.5f;

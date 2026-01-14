@@ -3,6 +3,7 @@ using UnityEngine;
 public class WinTrigger : MonoBehaviour
 {
     TimerUI timer; // Time used for star reward.
+    Main mainScript; // Cached Main instance
 
     // Initializes the win flag by finding the timer component in the scene.
     void Start()
@@ -12,6 +13,7 @@ public class WinTrigger : MonoBehaviour
         {
             timer = timerObject.GetComponent<TimerUI>();
         }
+        mainScript = FindObjectOfType<Main>();
     }
 
     // Handles player collision with the win flag. Displays the win menu and records level completion time.
@@ -47,9 +49,8 @@ public class WinTrigger : MonoBehaviour
 
         // Get level name from Main manager
         string levelName = "UnknownLevel";
-        Main main = FindObjectOfType<Main>();
-        if (main != null)
-            levelName = main.level;
+        if (mainScript != null)
+            levelName = mainScript.level;
 
         GameObject winMenuPrefab = Resources.Load<GameObject>("UIs/WinMenu");
         if (winMenuPrefab != null)
