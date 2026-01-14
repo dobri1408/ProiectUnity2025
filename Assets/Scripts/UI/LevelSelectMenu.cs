@@ -570,7 +570,7 @@ public class LevelSelectMenu : MonoBehaviour
     void OnLevelSelected(string levelName)
     {
         Hide();
-        mainScript.loadLevel(levelName);
+        mainScript.loadLevel(levelName, true); // forced=true to always clear old level
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

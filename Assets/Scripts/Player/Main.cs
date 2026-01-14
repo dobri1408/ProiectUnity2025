@@ -81,11 +81,27 @@ public class Main : MonoBehaviour
 
         foreach (GameObject obj in rootObjects)
         {
-            if (obj.CompareTag("Player") || 
-                obj.CompareTag("Level")  || 
+            // Check by tag
+            if (obj.CompareTag("Player") ||
+                obj.CompareTag("Level")  ||
                 obj.CompareTag("UI"))
             {
                 Destroy(obj);
+                continue;
+            }
+
+            // Also check for level/player/UI clones by name pattern (backup for missing tags)
+            if (obj.name.Contains("(Clone)"))
+            {
+                string lowerName = obj.name.ToLower();
+                if (lowerName.StartsWith("tutorial") ||
+                    lowerName.StartsWith("level") ||
+                    lowerName.StartsWith("player") ||
+                    lowerName.StartsWith("ui"))
+                {
+                    Destroy(obj);
+                    continue;
+                }
             }
 
             // Clear all checkpoints but keep the root object
