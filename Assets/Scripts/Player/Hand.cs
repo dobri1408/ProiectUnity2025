@@ -26,6 +26,7 @@ public class Hand : MonoBehaviour
         "TestMat",
         "Confusion",
         "Antigrav",
+        "Blend",
     };
 
     void Start()
