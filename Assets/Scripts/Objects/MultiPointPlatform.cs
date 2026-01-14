@@ -76,6 +76,7 @@ public class MultiPointPlatform : MonoBehaviour
     // Holds player on platform when colliding
     private void OnCollisionEnter(Collision collision)
     {
+        return;
         if (collision.gameObject.CompareTag("Player"))
         {
             collision.transform.SetParent(transform);
@@ -84,6 +85,7 @@ public class MultiPointPlatform : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
+        return;
         if (collision.gameObject.CompareTag("Player"))
         {
             collision.transform.SetParent(null);
