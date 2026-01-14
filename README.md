@@ -75,7 +75,7 @@ Proiectul include următoarele sisteme și mecanici implementate:
 - **Platforme Rotative** - Se rotesc constant, complicând traversarea [`Assets/Scripts/Objects/Spinner.cs`]
 - **Platforme Mobile** - Se deplasează pe o cale predefinită cu pauze la fiecare punct [`Assets/Scripts/Objects/MultiPointPlatform.cs`]
 - **Teleporturi** - Transportă jucătorul la puncte specifice, resetând viteza [`Assets/Scripts/Objects/Teleport.cs`]
-- **Teleporturi** - Zone de vânt puternic, împinge jucatorul [`Assets/Scripts/Objects/WindZone3D.cs`]
+- **Wind Zone** - Zone de vânt puternic, împinge jucatorul [`Assets/Scripts/Objects/WindZone3D.cs`]
 - **Flag de Victorie** - Marchează finalul nivelului [`Assets/Scripts/Objects/WinFlag.cs`]
 
 
