@@ -5448,11 +5448,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6453740315023116510, guid: 8fe863b0cf1af924da0c6db465c8a6ac, type: 3}
       propertyPath: speed
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6453740315023116510, guid: 8fe863b0cf1af924da0c6db465c8a6ac, type: 3}
       propertyPath: waitTime
-      value: 2
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6453740315023116510, guid: 8fe863b0cf1af924da0c6db465c8a6ac, type: 3}
       propertyPath: points.Array.size
