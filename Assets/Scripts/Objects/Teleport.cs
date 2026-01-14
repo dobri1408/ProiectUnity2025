@@ -4,6 +4,11 @@ public class TeleportFrom : MonoBehaviour
 {
     public Transform to; // point to teleport player to
 
+    // Cache mesh components for removal in Start() to avoid repeated GetComponent calls
+    private MeshRenderer meshRenderer;
+    private MeshFilter meshFilter;
+    private SkinnedMeshRenderer skinnedMeshRenderer;
+
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player")) // only handle player, hand will be teleported by player logic
@@ -29,22 +34,19 @@ public class TeleportFrom : MonoBehaviour
 
     void Start()
     {
-        RemoveVisuals(gameObject);
+        // Cache all mesh components
+        meshRenderer = GetComponent<MeshRenderer>();
+        meshFilter = GetComponent<MeshFilter>();
+        skinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
+
+        RemoveVisuals();
     }
 
-    // Removes visuals from teleporter and target obj
-    void RemoveVisuals(GameObject obj)
+    // Removes visuals from teleporter by destroying cached mesh components
+    void RemoveVisuals()
     {
-        if (obj == null) return;
-
-        MeshRenderer mr = obj.GetComponent<MeshRenderer>();
-        if (mr != null) Destroy(mr);
-
-        MeshFilter mf = obj.GetComponent<MeshFilter>();
-        if (mf != null) Destroy(mf);
-
-        SkinnedMeshRenderer smr = obj.GetComponent<SkinnedMeshRenderer>();
-        if (smr != null) Destroy(smr);
+        if (meshRenderer != null) Destroy(meshRenderer);
+        if (meshFilter != null) Destroy(meshFilter);
+        if (skinnedMeshRenderer != null) Destroy(skinnedMeshRenderer);
     }
 }
-

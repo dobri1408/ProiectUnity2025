@@ -2,6 +2,10 @@
 
 public class MultiPointPlatform : MonoBehaviour
 {
+    // Movement constants
+    private const float arrivalDistance = 0.05f;
+    private const float arrivalDistanceSqr = arrivalDistance * arrivalDistance; // Pre-calculated for sqrMagnitude
+
     public Transform[] points; // path of object
     public float speed = 2f; // linear velocity of movement
     public bool loop = true; // one-shot if false or loop if true
@@ -61,14 +65,15 @@ public class MultiPointPlatform : MonoBehaviour
             speed * Time.deltaTime
         );
 
-        if (Vector3.Distance(transform.position, targetPoint.position) < 0.05f)
+        // Use sqrMagnitude instead of Distance for better performance (avoids sqrt calculation)
+        if ((transform.position - targetPoint.position).sqrMagnitude < arrivalDistanceSqr)
         {
             isWaiting = true;
             waitTimer = waitTime;
         }
     }
 
-    // holds player on platform when colliding
+    // Holds player on platform when colliding
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Player"))

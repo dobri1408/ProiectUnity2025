@@ -3,8 +3,20 @@ using TMPro;
 
 public class TimerUI : MonoBehaviour
 {
-    float t;
-    bool active = true;
+    // Magic numbers as constants
+    private const int secondsPerMinute = 60;
+    private const int millisecondsMultiplier = 100;
+    private const int millisecondsPerSecond = 1000;
+
+    private float t;
+    private bool active = true;
+    private TextMeshProUGUI textComponent; // Cached for performance
+
+    void Start()
+    {
+        // Cache TextMeshProUGUI component to avoid GetComponent calls in Update
+        textComponent = GetComponent<TextMeshProUGUI>();
+    }
 
     void Update()
     {
@@ -12,11 +24,11 @@ public class TimerUI : MonoBehaviour
 
         t += Time.deltaTime;
 
-        int m = (int)(t / 60);
-        int s = (int)(t % 60);
-        int ms = (int)((t * 100) % 100);
+        int m = (int)(t / secondsPerMinute);
+        int s = (int)(t % secondsPerMinute);
+        int ms = (int)((t * millisecondsMultiplier) % millisecondsMultiplier);
 
-        GetComponent<TextMeshProUGUI>().text = $"{m:00}:{s:00}.{ms:00}";
+        textComponent.text = $"{m:00}:{s:00}.{ms:00}";
     }
 
     // Call this function to stop the timer
@@ -27,6 +39,6 @@ public class TimerUI : MonoBehaviour
 
     public int GetElapsedMilliseconds()
     {
-        return Mathf.RoundToInt(t * 1000f);
+        return Mathf.RoundToInt(t * MILLISECONDS_PER_SECOND);
     }
 }

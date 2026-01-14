@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// Gestioneaza muzica de fundal in joc
+// Manages background music in the game
 public class MusicManager : MonoBehaviour
 {
     public static MusicManager Instance { get; private set; }
@@ -34,7 +34,7 @@ public class MusicManager : MonoBehaviour
         audioSource.playOnAwake = false;
         audioSource.spatialBlend = 0f; // 2D sound
 
-        // incarca muzica din Resources
+        // Load music from Resources
         AudioClip music = Resources.Load<AudioClip>("Music/Vibing Over Venus");
         if (music != null)
         {
@@ -44,18 +44,18 @@ public class MusicManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("MusicManager: Nu am gasit fisierul muzical in Resources/Music/");
+            Debug.LogWarning("MusicManager: Could not find the music file in Resources/Music/");
         }
     }
 
     void Update()
     {
-        // fade smooth intre volume
+        // Smooth fade between volumes
         float currentTarget = isInMenu ? targetVolume * MENU_VOLUME_MULTIPLIER : targetVolume;
         audioSource.volume = Mathf.Lerp(audioSource.volume, currentTarget, Time.unscaledDeltaTime * FADE_SPEED);
     }
 
-    // seteaza volumul muzicii (0-1)
+    // Sets the music volume (0-1)
     public void SetVolume(float volume)
     {
         musicVolume = Mathf.Clamp01(volume);
@@ -63,19 +63,19 @@ public class MusicManager : MonoBehaviour
         PlayerPrefs.SetFloat("MusicVolume", musicVolume);
     }
 
-    // returneaza volumul curent
+    // Returns current volume
     public float GetVolume()
     {
         return musicVolume;
     }
 
-    // apeleaza cand intri in gameplay
+    // Called when entering gameplay
     public void OnEnterGameplay()
     {
         isInMenu = false;
     }
 
-    // apeleaza cand intri in meniu/pauza
+    // Called when entering menu/pause
     public void OnEnterMenu()
     {
         isInMenu = true;

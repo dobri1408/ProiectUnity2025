@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    // Physics constants
+    private const float groundedVelocityThreshold = 0.5f;
+    private const float groundCheckDistanceMultiplier = 1.5f;
+    private const float cameraClampMin = -90f;
+    private const float cameraClampMax = 90f;
+    private const float spatialBlend2D = 0f;
+
     [Header("Movement Settings")]
     public float moveSpeed = 20f;
     public float airMoveSpeedMultiplier = 0.2f;
@@ -48,6 +55,7 @@ public class Player : MonoBehaviour
     private AudioSource footstepsAudioSource;
     private bool isGrounded;
     private float footstepTimer;
+    private int layerMask; // Cached layer mask for ground checks
     public bool cheated = false;
 
     // Momentum grab
@@ -67,6 +75,9 @@ public class Player : MonoBehaviour
 
         handObj.player = transform; // give reference to self in hand
 
+        // Cache layer mask to avoid recalculating in FixedUpdate
+        layerMask = ~LayerMask.GetMask("Player");
+
         // Load saved mouse sensitivity
         if (PlayerPrefs.HasKey("MouseSensitivity"))
         {
@@ -79,14 +90,14 @@ public class Player : MonoBehaviour
         windAudioSource.loop = true;
         windAudioSource.volume = 0f;
         windAudioSource.playOnAwake = false;
-        windAudioSource.spatialBlend = 0f; // 2D sound
+        windAudioSource.spatialBlend = spatialBlend2D;
 
         footstepsAudioSource = gameObject.AddComponent<AudioSource>();
         footstepsAudioSource.clip = footstepsSound;
         footstepsAudioSource.loop = true;
         footstepsAudioSource.volume = 0f;
         footstepsAudioSource.playOnAwake = false;
-        footstepsAudioSource.spatialBlend = 0f; // 2D sound
+        footstepsAudioSource.spatialBlend = spatialBlend2D;
 
         // Check if audio clips are assigned
         if (windSound != null)
@@ -131,8 +142,7 @@ public class Player : MonoBehaviour
         RaycastHit hit;
         Vector3 spherePosition = transform.position;
         
-        // Create layer mask that ignores Player layer
-        int layerMask = ~LayerMask.GetMask("Player");
+        // Use cached layer mask instead of recalculating
         
         // Check with raycast first
         bool rayHit = Physics.Raycast(spherePosition, Vector3.down, out hit, groundCheckDistance, layerMask);
@@ -141,9 +151,9 @@ public class Player : MonoBehaviour
         isGrounded = rayHit || sphereHit;
         
         // Additional check
-        if (!isGrounded && Mathf.Abs(rb.linearVelocity.y) < 0.5f)
+        if (!isGrounded && Mathf.Abs(rb.linearVelocity.y) < groundedVelocityThreshold)
         {
-            isGrounded = Physics.Raycast(spherePosition, Vector3.down, groundCheckDistance * 1.5f, layerMask);
+            isGrounded = Physics.Raycast(spherePosition, Vector3.down, groundCheckDistance * groundCheckDistanceMultiplier, layerMask);
         }
     }
 
@@ -155,7 +165,7 @@ public class Player : MonoBehaviour
 
         transform.Rotate(Vector3.up * mouseX);
         camX -= mouseY;
-        camX = Mathf.Clamp(camX, -90f, 90f);
+        camX = Mathf.Clamp(camX, cameraClampMin, cameraClampMax);
         camTransform.localRotation = Quaternion.Euler(camX, 0f, 0f);
     }
 
