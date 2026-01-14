@@ -39,6 +39,6 @@ public class TimerUI : MonoBehaviour
 
     public int GetElapsedMilliseconds()
     {
-        return Mathf.RoundToInt(t * MILLISECONDS_PER_SECOND);
+        return Mathf.RoundToInt(t * millisecondsPerSecond);
     }
 }
