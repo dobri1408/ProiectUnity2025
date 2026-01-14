@@ -17,8 +17,6 @@ Acest proiect reprezintă un joc provocator de escaladare dezvoltat cu **Unity 6
 La această etapă, proiectul conține:
 
 - **⛏️ Escaladare realistă** — Sistem de climbing cu management al staminei
-- **⏱️ Provocări contra timp** — Bate-ți propriile recorduri și speedrun nivelurile
-- **👤 Personalizare** — Customizează-ți personajul după preferințe
 - **🎮 Gameplay 3D Level-Based** — Explorare liberă pentru a găsi drumul tău către victorie
 - **🏃 Explorare și Speedrunning** — Găsește calea ta și bate recordurile
 
@@ -40,10 +38,10 @@ La această etapă, proiectul conține:
    git clone https://github.com/dobri1408/ProiectUnity2025
    ```
 
-2. **Deschide în Unity Hub** — Utilizează **Unity 6.2** sau mai nou
+2. **Deschide în Unity Hub** — Utilizează **Unity 6000.2.7f2**
 
 3. **Încarcă scena principală:**
-   - Accesează `Assets/Scenes/Main.unity`
+   - Dublu click pe `Assets/Scenes/Main.unity`
    - Poate dura puțin până se încarcă materialele și texturile
 
 4. **Apasă Play** în Unity Editor pentru a testa jocul
@@ -53,6 +51,8 @@ La această etapă, proiectul conține:
 ## 🎮 Comenzi de Control
 
 | **Mișcare orizontală** | `W` `A` `S` `D` |
+
+| **Management Checkpoint-uri** | `R-Ultimul CP` `F-CP Nou` `V-Sterge ultimul CP` |
 
 | **Apucare pereți** (Climbing) | `Left Click` |
 
@@ -67,8 +67,7 @@ Proiectul include următoarele sisteme și mecanici implementate:
 
 - **Mâna interactivă** - Punct de ancorare pentru escaladare cu mișcare fluidă [`Assets/Scripts/Player/Hand.cs`]
 - **Management al staminei** - Regenerare progresivă și consum în timp real [`Assets/Scripts/Player/Player.cs`]
-- **Sistem de momentum** - Viteza de alergare se transferă în forța swingului [`Assets/Scripts/Player/Player.cs`]
-- **Fizică realista** - Utilizează RigidBody și PhysicMaterial pentru interacțiuni naturale [`Assets/Scripts/Player/Player.physicMaterial`]
+- **Fizică realistă** - Utilizează RigidBody și PhysicMaterial pentru interacțiuni naturale [`Assets/Scripts/Player/Player.physicMaterial`]
 
 
 ### ⚙️ Obiecte și Mecanici de Nivel
@@ -76,19 +75,20 @@ Proiectul include următoarele sisteme și mecanici implementate:
 - **Platforme Rotative** - Se rotesc constant, complicând traversarea [`Assets/Scripts/Objects/Spinner.cs`]
 - **Platforme Mobile** - Se deplasează pe o cale predefinită cu pauze la fiecare punct [`Assets/Scripts/Objects/MultiPointPlatform.cs`]
 - **Teleporturi** - Transportă jucătorul la puncte specifice, resetând viteza [`Assets/Scripts/Objects/Teleport.cs`]
-- **Flag de Victorie** - Marchează finalizarea nivelului cu sistem de stele [`Assets/Scripts/Objects/WinFlag.cs`]
+- **Teleporturi** - Zone de vânt puternic, împinge jucatorul [`Assets/Scripts/Objects/WindZone3D.cs`]
+- **Flag de Victorie** - Marchează finalul nivelului [`Assets/Scripts/Objects/WinFlag.cs`]
 
 
 ### 🔊 Sistem Audio
 
-- **Sunet de vânt dinamic** - Se adapteaza la viteza de mișcare a jucătorului [`Assets/Scripts/Player/Player.cs`]
+- **Sunet de vânt dinamic** - Se adaptează la viteza de mișcare a jucătorului [`Assets/Scripts/Player/Player.cs`]
 - **Sunet de pași** - Se redă când jucătorul este pe teren [`Assets/Scripts/Player/Player.cs`]
 
 
 ### 💾 Sistem de Salvare și Progresie
 
 - **Unlock de nivele** - Progresie liniară prin nivele [`Assets/Scripts/GameSaveManager.cs`]
-- **Personal Best Tracking** - Registrează cel mai bun timp pe fiecare nivel [`Assets/Scripts/GameSaveManager.cs`]
+- **Personal Best Tracking** - Înegistrează cel mai bun timp pe fiecare nivel [`Assets/Scripts/GameSaveManager.cs`]
 - **Sistem de Stele** - 0-3 stele bazate pe timp de completare [`Assets/Scripts/GameSaveManager.cs`]
 - **Salvare Setări** - Volum master și sensibilitate mouse persistent [`Assets/Scripts/GameSaveManager.cs`]
 
@@ -111,7 +111,7 @@ Proiectul include următoarele sisteme și mecanici implementate:
 [![Watch Video](https://img.shields.io/badge/▶️%20Video-red?style=for-the-badge)](https://youtu.be/OIM8lcHonYA)
 
 ---
-## 🤝📞 Feedback și Review
+## Feedback și Review
 
 Pentru orice sugestii, rapoarte de bug-uri sau feedback:
 
