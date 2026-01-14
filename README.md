@@ -104,7 +104,9 @@ Proiectul include următoarele sisteme și mecanici implementate:
 
 ---
 
-## 🎥 Videoclip scurt, cu un mic demo al jocului
+## 🎥 Demo video
+
+**Videoclip scurt, cu un mic demo al jocului:**
 
 [![Watch Video](https://img.shields.io/badge/▶️%20Video-red?style=for-the-badge)](https://youtu.be/OIM8lcHonYA)
 
