@@ -60,7 +60,7 @@ public class GameSaveManager : MonoBehaviour
     public GameSaveData saveData;
 
     // Define available levels (can be extended)
-    public static readonly string[] AvailableLevels = { "Tutorial", "Level 1", "Level 2", "Level 3" };
+    public static readonly string[] AvailableLevels = { "Tutorial", "Level 1", "Level 2", "Level 3"};
 
     // Initializes the singleton instance and loads saved game data.
     void Awake()
