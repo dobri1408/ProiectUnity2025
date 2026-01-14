@@ -29,7 +29,7 @@ public class Player : MonoBehaviour
     public float handDist = 2f;
     public float maxHandDist = 3.5f;
     public float handDamp = 0.7f;
-    public float momentumBoost = 0.5f; // cat din viteza de alergare se adauga la swing
+    public float momentumBoost = 0.5f; // how much of running speed is added to swing
     [Header("Stamina")]
     public float maxStamina = 1f;
     private float staminaRegenMult = 0.35f;
@@ -230,8 +230,8 @@ public class Player : MonoBehaviour
         // Update previous state
         wasAnchored = handObj.isAnchored;
 
-        float dist = Vector3.Distance(hand.transform.position, transform.position);
-        if (dist > maxHandDist)
+        float distSqr = (hand.transform.position - transform.position).sqrMagnitude;
+        if (distSqr > maxHandDist * maxHandDist)
         {
             hand.transform.position = transform.position;
             hand.linearVelocity = Vector3.zero;

@@ -3,6 +3,9 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class WindZone3D : MonoBehaviour
 {
+    // Wind direction constants
+    private const float directionMagnitudeThreshold = 0.0001f;
+
     [Header("Wind Direction")]
     public bool useLocalDirection = true;
     public Vector3 direction = Vector3.right; // normalized internally
@@ -27,10 +30,11 @@ public class WindZone3D : MonoBehaviour
             Debug.LogWarning($"{name}: WindZone3D collider should be Trigger.");
     }
 
+    // Calculates wind force at a given world position
     public Vector3 GetWindVector(Vector3 worldPosition)
     {
         Vector3 dir = (useLocalDirection ? transform.TransformDirection(direction) : direction);
-        dir = dir.sqrMagnitude > 0.0001f ? dir.normalized : Vector3.zero;
+        dir = dir.sqrMagnitude > directionMagnitudeThreshold ? dir.normalized : Vector3.zero;
 
         float mult = 1f;
 
@@ -43,6 +47,7 @@ public class WindZone3D : MonoBehaviour
         return wind;
     }
 
+    // Registers wind receiver when it enters the zone
     private void OnTriggerEnter(Collider other)
     {
         var r = other.GetComponentInParent<WindReceiver3D>();

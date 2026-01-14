@@ -17,6 +17,7 @@ public class LevelSelectMenu : MonoBehaviour
     private float cardAnimationDelay = 0.1f;
     private float cardAnimationDuration = 0.3f;
 
+    // Initializes the level select menu with main script and callbacks.
     public void Initialize(Main main, System.Action onBack, System.Action onLevelSelected = null)
     {
         mainScript = main;
@@ -25,6 +26,7 @@ public class LevelSelectMenu : MonoBehaviour
         CreateLevelSelectMenu();
     }
 
+    // Creates the main level select menu UI with canvas, panels, and level cards.
     void CreateLevelSelectMenu()
     {
         // Create Canvas
@@ -68,6 +70,7 @@ public class LevelSelectMenu : MonoBehaviour
         StartCoroutine(AnimateCardsIn());
     }
 
+    // Creates animated background with mountains, rocks, and parallax effects.
     void CreateAnimatedBackground(Transform parent)
     {
         // Dark sky gradient background
@@ -202,6 +205,7 @@ public class LevelSelectMenu : MonoBehaviour
         lineRect.anchoredPosition = new Vector2(0, 10);
     }
 
+    // Creates a grid layout of level cards based on available levels.
     void CreateLevelGrid(Transform parent)
     {
         GameObject gridContainer = new GameObject("GridContainer");
@@ -236,6 +240,7 @@ public class LevelSelectMenu : MonoBehaviour
         }
     }
 
+    // Creates a single level card with name, badge, stats, and completion indicators.
     void CreateLevelCard(Transform parent, string levelName, int levelNumber, Vector2 position, float width, float height)
     {
         LevelData levelData = GameSaveManager.Instance.GetLevelData(levelName);

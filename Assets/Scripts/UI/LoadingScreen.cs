@@ -7,6 +7,19 @@ using System;
 // Manages loading screen and asynchronous level loading
 public class LoadingScreen : MonoBehaviour
 {
+    // Loading screen constants
+    private const float fadeSpeed = 2f;
+    private const int canvasSortingOrder = 100;
+    private const float levelLoadProgress = 0.5f;
+    private const float playerLoadProgress = 0.3f;
+    private const float uiLoadProgress = 0.2f;
+    private const float completionDelay = 0.3f;
+    private const float bgColorR = 0.1f;
+    private const float bgColorG = 0.1f;
+    private const float bgColorB = 0.15f;
+    private const int textFontSize = 32;
+    private const int percentFontSize = 20;
+
     private Canvas canvas;
     private Image backgroundImage;
     private Image progressBarFill;
@@ -14,7 +27,7 @@ public class LoadingScreen : MonoBehaviour
     private TextMeshProUGUI percentText;
     private CanvasGroup canvasGroup;
 
-    private float fadeSpeed = 2f;
+    private float fadeSpeedValue = fadeSpeed;
     private bool isLoading = false;
 
     void Awake()
@@ -29,7 +42,7 @@ public class LoadingScreen : MonoBehaviour
         // Main canvas
         canvas = gameObject.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 100; // on top of everything
+        canvas.sortingOrder = canvasSortingOrder; // on top of everything
 
         gameObject.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         gameObject.AddComponent<GraphicRaycaster>();
@@ -40,7 +53,7 @@ public class LoadingScreen : MonoBehaviour
         GameObject bgObj = new GameObject("Background");
         bgObj.transform.SetParent(transform, false);
         backgroundImage = bgObj.AddComponent<Image>();
-        backgroundImage.color = new Color(0.1f, 0.1f, 0.15f, 1f);
+        backgroundImage.color = new Color(bgColorR, bgColorG, bgColorB, 1f);
         RectTransform bgRect = bgObj.GetComponent<RectTransform>();
         bgRect.anchorMin = Vector2.zero;
         bgRect.anchorMax = Vector2.one;
@@ -59,7 +72,7 @@ public class LoadingScreen : MonoBehaviour
         textObj.transform.SetParent(container.transform, false);
         loadingText = textObj.AddComponent<TextMeshProUGUI>();
         loadingText.text = "Loading...";
-        loadingText.fontSize = 32;
+        loadingText.fontSize = textFontSize;
         loadingText.alignment = TextAlignmentOptions.Center;
         loadingText.color = Color.white;
         RectTransform textRect = textObj.GetComponent<RectTransform>();
@@ -96,7 +109,7 @@ public class LoadingScreen : MonoBehaviour
         percentObj.transform.SetParent(container.transform, false);
         percentText = percentObj.AddComponent<TextMeshProUGUI>();
         percentText.text = "0%";
-        percentText.fontSize = 20;
+        percentText.fontSize = percentFontSize;
         percentText.alignment = TextAlignmentOptions.Center;
         percentText.color = new Color(0.7f, 0.7f, 0.7f, 1f);
         RectTransform percentRect = percentObj.GetComponent<RectTransform>();
@@ -106,13 +119,14 @@ public class LoadingScreen : MonoBehaviour
         percentRect.anchoredPosition = Vector2.zero;
     }
 
-    // Incarca un nivel asincron cu callback la final
+    // Loads a level asynchronously with callback when complete
     public void LoadLevelAsync(string levelName, Action<GameObject, GameObject, GameObject> onComplete)
     {
         if (isLoading) return;
         StartCoroutine(LoadLevelCoroutine(levelName, onComplete));
     }
 
+    // Coroutine that manages asynchronous resource loading with progress tracking
     IEnumerator LoadLevelCoroutine(string levelName, Action<GameObject, GameObject, GameObject> onComplete)
     {
         isLoading = true;
@@ -120,45 +134,45 @@ public class LoadingScreen : MonoBehaviour
         // Fade in loading screen
         yield return StartCoroutine(FadeIn());
 
-        loadingText.text = "Se incarca " + levelName + "...";
+        loadingText.text = "Loading " + levelName + "...";
         SetProgress(0f);
 
-        // Incarca nivelul async
+        // Load level asynchronously
         ResourceRequest levelRequest = Resources.LoadAsync<GameObject>("Levels/" + levelName);
         while (!levelRequest.isDone)
         {
-            SetProgress(levelRequest.progress * 0.5f); // 0-50%
+            SetProgress(levelRequest.progress * levelLoadProgress); // 0-50%
             yield return null;
         }
         GameObject levelPrefab = levelRequest.asset as GameObject;
 
-        // Incarca player async
-        loadingText.text = "Se incarca jucatorul...";
+        // Load player asynchronously
+        loadingText.text = "Loading player...";
         ResourceRequest playerRequest = Resources.LoadAsync<GameObject>("Player");
         while (!playerRequest.isDone)
         {
-            SetProgress(0.5f + playerRequest.progress * 0.3f); // 50-80%
+            SetProgress(levelLoadProgress + playerRequest.progress * playerLoadProgress); // 50-80%
             yield return null;
         }
         GameObject playerPrefab = playerRequest.asset as GameObject;
 
-        // Incarca UI async
-        loadingText.text = "Se incarca interfata...";
+        // Load UI asynchronously
+        loadingText.text = "Loading interface...";
         ResourceRequest uiRequest = Resources.LoadAsync<GameObject>("UIs/UI");
         while (!uiRequest.isDone)
         {
-            SetProgress(0.8f + uiRequest.progress * 0.2f); // 80-100%
+            SetProgress((levelLoadProgress + playerLoadProgress) + uiRequest.progress * uiLoadProgress); // 80-100%
             yield return null;
         }
         GameObject uiPrefab = uiRequest.asset as GameObject;
 
         SetProgress(1f);
-        loadingText.text = "Finalizare...";
+        loadingText.text = "Finalizing...";
 
-        // Mic delay pentru efect vizual
-        yield return new WaitForSeconds(0.3f);
+        // Small delay for visual effect
+        yield return new WaitForSeconds(completionDelay);
 
-        // Callback cu prefab-urile incarcate
+        // Invoke callback with loaded prefabs
         onComplete?.Invoke(levelPrefab, playerPrefab, uiPrefab);
 
         // Fade out loading screen
@@ -167,6 +181,7 @@ public class LoadingScreen : MonoBehaviour
         isLoading = false;
     }
 
+    // Updates progress bar fill and percentage text
     void SetProgress(float progress)
     {
         progress = Mathf.Clamp01(progress);
@@ -174,6 +189,7 @@ public class LoadingScreen : MonoBehaviour
         percentText.text = Mathf.RoundToInt(progress * 100) + "%";
     }
 
+    // Fades in the loading screen with smooth alpha transition
     IEnumerator FadeIn()
     {
         canvas.enabled = true;
@@ -181,23 +197,25 @@ public class LoadingScreen : MonoBehaviour
 
         while (canvasGroup.alpha < 1f)
         {
-            canvasGroup.alpha += Time.unscaledDeltaTime * fadeSpeed;
+            canvasGroup.alpha += Time.unscaledDeltaTime * fadeSpeedValue;
             yield return null;
         }
         canvasGroup.alpha = 1f;
     }
 
+    // Fades out the loading screen with smooth alpha transition
     IEnumerator FadeOut()
     {
         while (canvasGroup.alpha > 0f)
         {
-            canvasGroup.alpha -= Time.unscaledDeltaTime * fadeSpeed;
+            canvasGroup.alpha -= Time.unscaledDeltaTime * fadeSpeedValue;
             yield return null;
         }
         canvasGroup.alpha = 0f;
         canvas.enabled = false;
     }
 
+    // Returns whether a level is currently loading
     public bool IsLoading()
     {
         return isLoading;

@@ -21,7 +21,7 @@ public class Main : MonoBehaviour
             return; // Exit early if level already exists
         }
 
-        // Verifica daca loading screen e ocupat
+        // Check if loading screen is busy
         if (loadingScreen != null && loadingScreen.IsLoading())
         {
             return;
@@ -30,24 +30,24 @@ public class Main : MonoBehaviour
         ClearLevel();
         this.level = name;
 
-        // Daca loadingScreen nu e gata, foloseste incarcare sincrona
+        // If loading screen is not ready, use synchronous loading
         if (loadingScreen == null)
         {
             LoadLevelSync(name);
             return;
         }
 
-        // Foloseste incarcare asincrona
+        // Use asynchronous loading
         loadingScreen.LoadLevelAsync(name, (levelPrefab, playerPrefab, uiPrefab) =>
         {
-            // Instantiaza dupa ce totul s-a incarcat
+            // Instantiate after everything is loaded
             Instantiate(levelPrefab, Vector3.zero, Quaternion.identity);
             Instantiate(playerPrefab, new Vector3(0, 1, 0), Quaternion.identity);
 
             GameObject uiInstance = Instantiate(uiPrefab, Vector3.zero, Quaternion.identity);
             uiInstance.transform.Find("LevelName").GetComponent<TextMeshProUGUI>().text = name;
 
-            // Seteaza starea jocului dupa incarcare
+            // Set game state after loading
             if (MainMenu.Instance != null)
             {
                 MainMenu.Instance.OnLevelStarted();
@@ -55,7 +55,7 @@ public class Main : MonoBehaviour
         });
     }
 
-    // Fallback pentru incarcare sincrona
+    // Fallback for synchronous loading
     private void LoadLevelSync(string name)
     {
         GameObject levelPrefab = Resources.Load<GameObject>("Levels/" + name);
@@ -68,7 +68,7 @@ public class Main : MonoBehaviour
         GameObject uiInstance = Instantiate(uiPrefab, Vector3.zero, Quaternion.identity);
         uiInstance.transform.Find("LevelName").GetComponent<TextMeshProUGUI>().text = name;
 
-        // Seteaza starea jocului
+        // Set game state
         if (MainMenu.Instance != null)
         {
             MainMenu.Instance.OnLevelStarted();

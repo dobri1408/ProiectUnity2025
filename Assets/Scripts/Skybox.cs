@@ -1,11 +1,14 @@
 using UnityEngine;
 
+// Rotates the skybox based on time for dynamic sky effect
 public class Skybox : MonoBehaviour
 {
-    public float speed = 0.13f;
+    private const float defaultSpeed = 0.13f;
 
-    // Update is called once per frame
-    void Update()
+    public float speed = defaultSpeed;
+
+    // Applies rotation to skybox material each frame.
+    private void Update()
     {
         RenderSettings.skybox.SetFloat("_Rotation", Time.time * speed);
     }

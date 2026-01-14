@@ -509,7 +509,7 @@ public class MainMenu : MonoBehaviour
 
     void OnPlayClicked()
     {
-        // Daca jocul e deja pornit (suntem in pauza), doar reluam
+        // If game is already running (in pause), just resume
         if (isGameStarted)
         {
             isPaused = false;
@@ -525,7 +525,7 @@ public class MainMenu : MonoBehaviour
             return;
         }
 
-        // Altfel, pornim un joc nou
+        // Otherwise, start a new game
         isGameStarted = true;
         isPaused = false;
         Time.timeScale = 1f;
@@ -573,15 +573,15 @@ public class MainMenu : MonoBehaviour
         isPaused = false;
         Time.timeScale = 1f;
 
-        // ascunde meniul
+        // Hide menu
         menuCanvas.gameObject.SetActive(false);
         settingsPanel.SetActive(false);
 
-        // ascunde cursorul in gameplay
+        // Hide cursor in gameplay
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // muzica la volum plin in gameplay
+        // Music at full volume in gameplay
         if (MusicManager.Instance != null)
             MusicManager.Instance.OnEnterGameplay();
     }
