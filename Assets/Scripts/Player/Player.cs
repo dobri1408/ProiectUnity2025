@@ -69,14 +69,29 @@ public class Player : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
 
         camTransform = GetComponentInChildren<Camera>().transform;
         handObj = hand.GetComponent<Hand>();
 
         handObj.player = transform; // give reference to self in hand
+        
+        // Reset hand state
+        handObj.isAnchored = false;
+        Rigidbody handRB = hand.GetComponent<Rigidbody>();
+        if (handRB != null)
+        {
+            handRB.linearVelocity = Vector3.zero;
+            handRB.angularVelocity = Vector3.zero;
+        }
 
         // Cache layer mask to avoid recalculating in FixedUpdate
         layerMask = ~LayerMask.GetMask("Player");
+
+        // Reset stamina
+        stamina = maxStamina;
+        exhausted = false;
 
         // Load saved mouse sensitivity
         if (PlayerPrefs.HasKey("MouseSensitivity"))

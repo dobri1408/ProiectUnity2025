@@ -42,7 +42,15 @@ public class Main : MonoBehaviour
         {
             // Instantiate after everything is loaded
             Instantiate(levelPrefab, Vector3.zero, Quaternion.identity);
-            Instantiate(playerPrefab, new Vector3(0, 1, 0), Quaternion.identity);
+            GameObject playerInstance = Instantiate(playerPrefab, new Vector3(0, 1, 0), Quaternion.identity);
+            
+            // Reset player physics to prevent carryover from previous level
+            Rigidbody playerRb = playerInstance.GetComponent<Rigidbody>();
+            if (playerRb != null)
+            {
+                playerRb.linearVelocity = Vector3.zero;
+                playerRb.angularVelocity = Vector3.zero;
+            }
 
             GameObject uiInstance = Instantiate(uiPrefab, Vector3.zero, Quaternion.identity);
             uiInstance.transform.Find("LevelName").GetComponent<TextMeshProUGUI>().text = name;
@@ -62,7 +70,15 @@ public class Main : MonoBehaviour
         Instantiate(levelPrefab, Vector3.zero, Quaternion.identity);
 
         GameObject playerPrefab = Resources.Load<GameObject>("Player");
-        Instantiate(playerPrefab, new Vector3(0, 1, 0), Quaternion.identity);
+        GameObject playerInstance = Instantiate(playerPrefab, new Vector3(0, 1, 0), Quaternion.identity);
+        
+        // Reset player physics to prevent carryover from previous level
+        Rigidbody playerRb = playerInstance.GetComponent<Rigidbody>();
+        if (playerRb != null)
+        {
+            playerRb.linearVelocity = Vector3.zero;
+            playerRb.angularVelocity = Vector3.zero;
+        }
 
         GameObject uiPrefab = Resources.Load<GameObject>("UIs/UI");
         GameObject uiInstance = Instantiate(uiPrefab, Vector3.zero, Quaternion.identity);
@@ -77,16 +93,27 @@ public class Main : MonoBehaviour
 
     void ClearLevel()
     {
+        // First, clear all checkpoints completely
+        GameObject checkpoints = GameObject.Find("Checkpoints");
+        if (checkpoints != null)
+        {
+            Destroy(checkpoints);
+        }
+
         GameObject[] rootObjects = gameObject.scene.GetRootGameObjects();
+        List<GameObject> toDestroy = new List<GameObject>();
 
         foreach (GameObject obj in rootObjects)
         {
+            // Skip the Main script itself
+            if (obj == gameObject) continue;
+
             // Check by tag
             if (obj.CompareTag("Player") ||
                 obj.CompareTag("Level")  ||
                 obj.CompareTag("UI"))
             {
-                Destroy(obj);
+                toDestroy.Add(obj);
                 continue;
             }
 
@@ -99,20 +126,16 @@ public class Main : MonoBehaviour
                     lowerName.StartsWith("player") ||
                     lowerName.StartsWith("ui"))
                 {
-                    Destroy(obj);
+                    toDestroy.Add(obj);
                     continue;
                 }
             }
+        }
 
-            // Clear all checkpoints but keep the root object
-            if (obj.name == "Checkpoints")
-            {
-                Transform t = obj.transform;
-                for (int i = t.childCount - 1; i >= 0; i--)
-                {
-                    Destroy(t.GetChild(i).gameObject);
-                }
-            }
+        // Destroy all marked objects
+        foreach (GameObject obj in toDestroy)
+        {
+            Destroy(obj);
         }
     }
 
