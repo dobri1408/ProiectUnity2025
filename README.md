@@ -53,25 +53,36 @@ La această etapă, proiectul conține:
 ## 🎮 Comenzi de Control
 
 | **Mișcare orizontală** | `W` `A` `S` `D` |
+<<<<<<< HEAD
+=======
 
+>>>>>>> b47dac73e3b7d8b8136784a4f3de4001e063f198
 | **Apucare pereți** (Climbing) | `Left Click` |
 
 ---
 
+<<<<<<< HEAD
 ## � Sisteme de Joc
+
+Proiectul include următoarele sisteme și mecanici implementate:
+
+### ⛏️ Sistemul de Escaladare
+=======
+## 🛠️ Sisteme de Joc
 
 Proiectul include următoarele sisteme și mecanici implementate:
 
 
 ### ⛏️ Sistemul de Escaladare
 
+>>>>>>> b47dac73e3b7d8b8136784a4f3de4001e063f198
 - **Mâna interactivă** - Punct de ancorare pentru escaladare cu mișcare fluidă [`Assets/Scripts/Player/Hand.cs`]
 - **Management al staminei** - Regenerare progresivă și consum în timp real [`Assets/Scripts/Player/Player.cs`]
 - **Sistem de momentum** - Viteza de alergare se transferă în forța swingului [`Assets/Scripts/Player/Player.cs`]
 - **Fizică realista** - Utilizează RigidBody și PhysicMaterial pentru interacțiuni naturale [`Assets/Scripts/Player/Player.physicMaterial`]
 
 
-### 🎮 Obiecte și Mecanici de Nivel
+### ⚙️ Obiecte și Mecanici de Nivel
 
 - **Platforme Rotative** - Se rotesc constant, complicând traversarea [`Assets/Scripts/Objects/Spinner.cs`]
 - **Platforme Mobile** - Se deplasează pe o cale predefinită cu pauze la fiecare punct [`Assets/Scripts/Objects/MultiPointPlatform.cs`]
@@ -104,7 +115,7 @@ Proiectul include următoarele sisteme și mecanici implementate:
 
 ---
 
-## �📞 Feedback și Review
+## 🤝📞 Feedback și Review
 
 Pentru orice sugestii, rapoarte de bug-uri sau feedback:
 

@@ -3,10 +3,14 @@ using System.Collections.Generic;
 
 public class Hand : MonoBehaviour
 {
-    public float grabableDistanceMultiplier = 1.25f; // how far until forcefully let go
+    // Hand distance multiplier for grabbing
+    private const float grabDistanceMultiplier = 1.25f;
+
+    public float grabableDistanceMultiplier = grabDistanceMultiplier;
     public bool isAnchored = false;
 
     private Rigidbody rb;
+    private Renderer handRenderer; // Cached renderer for performance
     private GameObject collObj; // object hand is anchored to, used for moving platforms
     private Transform tracker; // position that follows platform
     public Transform player;
@@ -22,12 +26,15 @@ public class Hand : MonoBehaviour
         "TestMat",
     };
 
+    // Initializes hand component and finds player reference.
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        handRenderer = GetComponent<Renderer>(); // Cache renderer to avoid repeated GetComponent calls
         playerObj = transform.parent.GetComponentInChildren<Player>(); 
     }
 
+    // Handles grabbing to climbable surfaces when mouse button is held and conditions are met.
     void OnCollisionStay(Collision collision)
     {
         // if player is holding and is able to hold, create a tracker for mouse position
@@ -41,22 +48,18 @@ public class Hand : MonoBehaviour
         }
     }
 
-    // if hand is too far to hold
+    // Checks if hand is within valid grabbing distance from player.
     private bool IsWithinHandDistance()
     {
-        if (player == null) return false;
+        if (player == null || playerObj == null) return false;
         
         float distance = Vector3.Distance(transform.position, player.position);
-        Player p = player.GetComponent<Player>();
         
-        if (p != null)
-        {
-            return distance <= p.handDist * grabableDistanceMultiplier;
-        }
-        return false;
+        // Use cached playerObj instead of GetComponent to avoid repeated calls
+        return distance <= playerObj.handDist * grabableDistanceMultiplier;
     }
 
-    // checks for material name in hashset
+    // Checks if a game object has a climbable material.
     private bool isGrabableMat(GameObject obj)
     {
         if (obj == null) return false;
@@ -83,13 +86,15 @@ public class Hand : MonoBehaviour
         if (isAnchored && Input.GetMouseButton(0) && playerObj.exhausted == false)
         {
             rb.linearVelocity = Vector3.zero;
-            gameObject.GetComponent<Renderer>().material.color = Color.gray;
+            // Use sharedMaterial to avoid creating material instances
+            handRenderer.material.color = Color.gray;
             transform.position = tracker.position;
             transform.rotation = tracker.rotation;
         }
         else
         {
-            gameObject.GetComponent<Renderer>().material.color = Color.white; // reset color
+            // Reset color
+            handRenderer.material.color = Color.white;
             if (tracker != null) Destroy(tracker.gameObject);
             isAnchored = false;
             collObj = null; // free reference and tracker

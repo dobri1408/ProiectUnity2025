@@ -62,6 +62,7 @@ public class GameSaveManager : MonoBehaviour
     // Define available levels (can be extended)
     public static readonly string[] AvailableLevels = { "Tutorial", "Level 1" };
 
+    // Initializes the singleton instance and loads saved game data.
     void Awake()
     {
         if (_instance != null && _instance != this)
@@ -74,6 +75,7 @@ public class GameSaveManager : MonoBehaviour
         LoadGame();
     }
 
+    // Loads game save data from PlayerPrefs or initializes new save data if none exists.
     public void LoadGame()
     {
         if (PlayerPrefs.HasKey(SAVE_KEY))
@@ -94,17 +96,19 @@ public class GameSaveManager : MonoBehaviour
         AudioListener.volume = saveData.masterVolume;
     }
 
+    // Initializes default levels for a new game. All levels are unlocked by default.
     void InitializeDefaultLevels()
     {
         saveData.levels.Clear();
         for (int i = 0; i < AvailableLevels.Length; i++)
         {
-            // Toate nivelele sunt deblocate implicit
+            // All levels are unlocked by default
             LevelData levelData = new LevelData(AvailableLevels[i], true);
             saveData.levels.Add(levelData);
         }
     }
 
+    // Ensures all available levels exist in save data and are unlocked.
     void EnsureAllLevelsExist()
     {
         foreach (string levelName in AvailableLevels)
@@ -112,17 +116,18 @@ public class GameSaveManager : MonoBehaviour
             LevelData existing = GetLevelData(levelName);
             if (existing == null)
             {
-                // Nivelele noi sunt deblocate implicit
+                // New levels are unlocked by default
                 saveData.levels.Add(new LevelData(levelName, true));
             }
             else
             {
-                // Deblocheaza nivelele existente
+                // Unlock existing levels
                 existing.isUnlocked = true;
             }
         }
     }
 
+    // Saves game data to PlayerPrefs including level progress and audio settings.
     public void SaveGame()
     {
         saveData.masterVolume = AudioListener.volume;
@@ -135,11 +140,13 @@ public class GameSaveManager : MonoBehaviour
         Debug.Log("Game saved!");
     }
 
+    // Retrieves level data for a specific level by name.
     public LevelData GetLevelData(string levelName)
     {
         return saveData.levels.Find(l => l.levelName == levelName);
     }
 
+    // Records level completion with time and star rating.
     public void CompleteLevel(string levelName, int timeMs, int stars)
     {
         LevelData levelData = GetLevelData(levelName);

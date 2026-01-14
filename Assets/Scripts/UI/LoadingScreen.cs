@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
-// Gestioneaza ecranul de incarcare si incarcarea asincrona a nivelurilor
+// Manages loading screen and asynchronous level loading
 public class LoadingScreen : MonoBehaviour
 {
     private Canvas canvas;
@@ -26,17 +26,17 @@ public class LoadingScreen : MonoBehaviour
 
     void CreateUI()
     {
-        // Canvas principal
+        // Main canvas
         canvas = gameObject.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 100; // deasupra tuturor
+        canvas.sortingOrder = 100; // on top of everything
 
         gameObject.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         gameObject.AddComponent<GraphicRaycaster>();
 
         canvasGroup = gameObject.AddComponent<CanvasGroup>();
 
-        // Background negru
+        // Black background
         GameObject bgObj = new GameObject("Background");
         bgObj.transform.SetParent(transform, false);
         backgroundImage = bgObj.AddComponent<Image>();
@@ -46,7 +46,7 @@ public class LoadingScreen : MonoBehaviour
         bgRect.anchorMax = Vector2.one;
         bgRect.sizeDelta = Vector2.zero;
 
-        // Container centrat
+        // Centered container
         GameObject container = new GameObject("Container");
         container.transform.SetParent(transform, false);
         RectTransform containerRect = container.AddComponent<RectTransform>();
@@ -54,11 +54,11 @@ public class LoadingScreen : MonoBehaviour
         containerRect.anchorMax = new Vector2(0.5f, 0.5f);
         containerRect.sizeDelta = new Vector2(400, 100);
 
-        // Text "Loading..."
+        // Loading text
         GameObject textObj = new GameObject("LoadingText");
         textObj.transform.SetParent(container.transform, false);
         loadingText = textObj.AddComponent<TextMeshProUGUI>();
-        loadingText.text = "Se incarca...";
+        loadingText.text = "Loading...";
         loadingText.fontSize = 32;
         loadingText.alignment = TextAlignmentOptions.Center;
         loadingText.color = Color.white;
@@ -91,7 +91,7 @@ public class LoadingScreen : MonoBehaviour
         barFillRect.pivot = new Vector2(0, 0.5f);
         barFillRect.anchoredPosition = Vector2.zero;
 
-        // Procent text
+        // Percent text
         GameObject percentObj = new GameObject("PercentText");
         percentObj.transform.SetParent(container.transform, false);
         percentText = percentObj.AddComponent<TextMeshProUGUI>();

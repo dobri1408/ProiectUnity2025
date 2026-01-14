@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    // Physics constants
+    private const float groundedVelocityThreshold = 0.5f;
+    private const float groundCheckDistanceMultiplier = 1.5f;
+    private const float cameraClampMin = -90f;
+    private const float cameraClampMax = 90f;
+    private const float spatialBlend2D = 0f;
+
     [Header("Movement Settings")]
     public float moveSpeed = 20f;
     public float airMoveSpeedMultiplier = 0.2f;
@@ -48,6 +55,7 @@ public class Player : MonoBehaviour
     private AudioSource footstepsAudioSource;
     private bool isGrounded;
     private float footstepTimer;
+    private int layerMask; // Cached layer mask for ground checks
     public bool cheated = false;
 
     // Momentum grab
@@ -67,6 +75,9 @@ public class Player : MonoBehaviour
 
         handObj.player = transform; // give reference to self in hand
 
+        // Cache layer mask to avoid recalculating in FixedUpdate
+        layerMask = ~LayerMask.GetMask("Player");
+
         // Load saved mouse sensitivity
         if (PlayerPrefs.HasKey("MouseSensitivity"))
         {
@@ -79,16 +90,16 @@ public class Player : MonoBehaviour
         windAudioSource.loop = true;
         windAudioSource.volume = 0f;
         windAudioSource.playOnAwake = false;
-        windAudioSource.spatialBlend = 0f; // 2D sound
+        windAudioSource.spatialBlend = spatialBlend2D;
 
         footstepsAudioSource = gameObject.AddComponent<AudioSource>();
         footstepsAudioSource.clip = footstepsSound;
         footstepsAudioSource.loop = true;
         footstepsAudioSource.volume = 0f;
         footstepsAudioSource.playOnAwake = false;
-        footstepsAudioSource.spatialBlend = 0f; // 2D sound
+        footstepsAudioSource.spatialBlend = spatialBlend2D;
 
-        // Verifică dacă clipurile audio sunt setate
+        // Check if audio clips are assigned
         if (windSound != null)
         {
             windAudioSource.Play();
@@ -116,6 +127,7 @@ public class Player : MonoBehaviour
         HandleAudio();
     }
 
+    // FixedUpdate is called for physics calculations. Handles movement, hand positioning, and stamina.
     void FixedUpdate()
     {
         CheckGrounded();
@@ -124,13 +136,13 @@ public class Player : MonoBehaviour
         HandleStamina(); // call after hand for Anchored status
     }
 
+    // Checks if the player is grounded using raycast and sphere cast for better accuracy.
     void CheckGrounded()
     {
         RaycastHit hit;
         Vector3 spherePosition = transform.position;
         
-        // Create layer mask that ignores Player layer
-        int layerMask = ~LayerMask.GetMask("Player");
+        // Use cached layer mask instead of recalculating
         
         // Check with raycast first
         bool rayHit = Physics.Raycast(spherePosition, Vector3.down, out hit, groundCheckDistance, layerMask);
@@ -139,12 +151,13 @@ public class Player : MonoBehaviour
         isGrounded = rayHit || sphereHit;
         
         // Additional check
-        if (!isGrounded && Mathf.Abs(rb.linearVelocity.y) < 0.5f)
+        if (!isGrounded && Mathf.Abs(rb.linearVelocity.y) < groundedVelocityThreshold)
         {
-            isGrounded = Physics.Raycast(spherePosition, Vector3.down, groundCheckDistance * 1.5f, layerMask);
+            isGrounded = Physics.Raycast(spherePosition, Vector3.down, groundCheckDistance * groundCheckDistanceMultiplier, layerMask);
         }
     }
 
+    // Handles camera rotation based on mouse input.
     void HandleMouse()
     {
         float mouseX = Input.GetAxis("Mouse X") * mouseSens * Time.deltaTime;
@@ -152,10 +165,11 @@ public class Player : MonoBehaviour
 
         transform.Rotate(Vector3.up * mouseX);
         camX -= mouseY;
-        camX = Mathf.Clamp(camX, -90f, 90f);
+        camX = Mathf.Clamp(camX, cameraClampMin, cameraClampMax);
         camTransform.localRotation = Quaternion.Euler(camX, 0f, 0f);
     }
 
+    // Handles player movement based on input. Applies force, damping, and speed limits.
     void HandleMovement()
     {
         float h = Input.GetAxisRaw("Horizontal");
@@ -186,11 +200,12 @@ public class Player : MonoBehaviour
         }
     }
 
+    // Manages the hand position and player attachment to climbing surfaces.
     void HandleHand()
     {
         if (!handObj.isAnchored)
         {
-            // Salveaza viteza pentru momentum boost cand face grab
+            // Save velocity for momentum boost when grabbing
             velocityBeforeGrab = rb.linearVelocity;
 
             Vector3 handPos = transform.position + camTransform.forward * handDist;
@@ -203,7 +218,7 @@ public class Player : MonoBehaviour
             Vector3 target = playerPos - transform.position;
             Vector3 newVelocity = Vector3.Lerp(rb.linearVelocity, target * 10, handDamp);
 
-            // Aplica momentum boost doar la inceputul grab-ului
+            // Apply momentum boost only at the beginning of grab
             if (!wasAnchored)
             {
                 newVelocity += velocityBeforeGrab * momentumBoost;
@@ -212,7 +227,7 @@ public class Player : MonoBehaviour
             rb.linearVelocity = newVelocity;
         }
 
-        // Update starea anterioara
+        // Update previous state
         wasAnchored = handObj.isAnchored;
 
         float dist = Vector3.Distance(hand.transform.position, transform.position);
@@ -223,6 +238,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    // Manages wind and footstep audio based on player speed and grounded state.
     void HandleAudio()
     {
         if (windAudioSource == null || footstepsAudioSource == null) return;
@@ -231,7 +247,7 @@ public class Player : MonoBehaviour
         float horizontalSpeed = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z).magnitude;
         float verticalSpeed = Mathf.Abs(rb.linearVelocity.y);
 
-        // Wind sound - se aude când ești în aer SAU când ai viteză verticală mare (săritura)
+        // Wind sound - plays when in air OR when jumping (large vertical velocity)
         bool shouldPlayWind = (!isGrounded || verticalSpeed > 0.5f) && currentSpeed > windVelocityThreshold;
 
         if (shouldPlayWind)
@@ -241,21 +257,21 @@ public class Player : MonoBehaviour
                 windAudioSource.Play();
             }
 
-            // Calculează volumul bazat pe viteză - volum minim mai mare pentru a se auzi mereu
+            // Calculate volume based on velocity - minimum volume to be heard always
             float velocityRatio = Mathf.Clamp01((currentSpeed - windVelocityThreshold) / (maxWindVelocity - windVelocityThreshold));
-            // Volum între 0.3 și maxWindVolume pentru a se auzi mai bine
+            // Volume between 0.3 and maxWindVolume for better hearing
             float targetVolume = Mathf.Lerp(0.3f, maxWindVolume, velocityRatio);
 
-            // Fade in foarte rapid pentru răspuns instant
+            // Fade in very quickly for instant response
             windAudioSource.volume = Mathf.Lerp(windAudioSource.volume, targetVolume, Time.deltaTime * 20f);
         }
         else
         {
-            // Fade out rapid când aterizezi
+            // Fade out quickly when landing
             windAudioSource.volume = Mathf.Lerp(windAudioSource.volume, 0f, Time.deltaTime * 12f);
         }
 
-        // Footsteps sound - doar când ești pe pământ și te miști orizontal (fără viteză verticală mare)
+        // Footsteps sound - only when grounded and moving horizontally (without large vertical velocity)
         bool shouldPlayFootsteps = isGrounded && horizontalSpeed > 0.05f && verticalSpeed < 0.5f;
 
         if (shouldPlayFootsteps)
@@ -265,19 +281,20 @@ public class Player : MonoBehaviour
                 footstepsAudioSource.Play();
             }
 
-            // Volume based on horizontal speed - volum minim mai mare
+            // Volume based on horizontal speed - minimum volume to be heard always
             float speedRatio = Mathf.Clamp01(horizontalSpeed / maxSpeed);
-            // Volum între 0.4 și footstepVolume pentru a se auzi mereu când mergi
+            // Volume between 0.4 and footstepVolume to be heard always while walking
             float targetFootstepVolume = Mathf.Lerp(0.4f, footstepVolume, speedRatio);
             footstepsAudioSource.volume = Mathf.Lerp(footstepsAudioSource.volume, targetFootstepVolume, Time.deltaTime * 15f);
         }
         else
         {
-            // Fade out rapid când te oprești sau sari
+            // Fade out quickly when stopping or jumping
             footstepsAudioSource.volume = Mathf.Lerp(footstepsAudioSource.volume, 0f, Time.deltaTime * 18f);
         }
     }
 
+    // Manages stamina regeneration and depletion based on climbing state.
     void HandleStamina()
     {
         if(handObj.isAnchored) {

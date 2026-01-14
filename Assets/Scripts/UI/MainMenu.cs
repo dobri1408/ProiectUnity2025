@@ -46,7 +46,7 @@ public class MainMenu : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
-            // muzica mai incet in pauza
+            // Music slower in pause
             if (MusicManager.Instance != null)
                 MusicManager.Instance.OnEnterMenu();
         }
@@ -58,7 +58,7 @@ public class MainMenu : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            // muzica la volum plin
+            // Music at full volume
             if (MusicManager.Instance != null)
                 MusicManager.Instance.OnEnterGameplay();
         }

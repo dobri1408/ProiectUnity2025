@@ -6,11 +6,21 @@ using TMPro;
 // Adds smooth hover and click animations to buttons
 public class ButtonAnimator : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
+    // Animation constants
+    private const float hoverScale = 1.05f;
+    private const float pressScale = 0.95f;
+    private const float animationSpeed = 12f;
+    private const float colorBrightnessIncrease = 0.1f;
+    private const float colorGreenBoost = 0.15f;
+    private const float colorBlueBoost = 0.2f;
+    private const float colorPressMultiplier = 0.8f;
+    private const float hoverBorderR = 0.5f;
+    private const float hoverBorderG = 0.7f;
+    private const float hoverBorderB = 1f;
+    private const float hoverBorderA = 0.7f;
+
     private Vector3 originalScale;
     private Vector3 targetScale;
-    private float hoverScale = 1.05f;
-    private float pressScale = 0.95f;
-    private float animationSpeed = 12f;
 
     private Image backgroundImage;
     private Image borderImage;
@@ -36,15 +46,15 @@ public class ButtonAnimator : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         {
             originalBgColor = backgroundImage.color;
             hoverBgColor = new Color(
-                Mathf.Min(originalBgColor.r + 0.1f, 1f),
-                Mathf.Min(originalBgColor.g + 0.15f, 1f),
-                Mathf.Min(originalBgColor.b + 0.2f, 1f),
+                Mathf.Min(originalBgColor.r + colorBrightnessIncrease, 1f),
+                Mathf.Min(originalBgColor.g + colorGreenBoost, 1f),
+                Mathf.Min(originalBgColor.b + colorBlueBoost, 1f),
                 originalBgColor.a
             );
             pressBgColor = new Color(
-                originalBgColor.r * 0.8f,
-                originalBgColor.g * 0.8f,
-                originalBgColor.b * 0.8f,
+                originalBgColor.r * colorPressMultiplier,
+                originalBgColor.g * colorPressMultiplier,
+                originalBgColor.b * colorPressMultiplier,
                 originalBgColor.a
             );
         }
@@ -57,7 +67,7 @@ public class ButtonAnimator : MonoBehaviour, IPointerEnterHandler, IPointerExitH
             if (borderImage != null)
             {
                 originalBorderColor = borderImage.color;
-                hoverBorderColor = new Color(0.5f, 0.7f, 1f, 0.7f);
+                hoverBorderColor = new Color(hoverBorderR, hoverBorderG, hoverBorderB, hoverBorderA);
             }
         }
 
