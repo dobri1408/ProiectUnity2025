@@ -857,6 +857,7 @@ GameObject:
   - component: {fileID: 9121698890520038417}
   - component: {fileID: 402226018358258585}
   - component: {fileID: 8624846370007512048}
+  - component: {fileID: 1599387521232433348}
   m_Layer: 6
   m_Name: Body
   m_TagString: Player
@@ -1009,6 +1010,7 @@ MonoBehaviour:
   handDist: 2
   maxHandDist: 3
   handDamp: 1
+  momentumBoost: 0.5
   maxStamina: 1
   stamina: 0
   exhausted: 0
@@ -1024,6 +1026,22 @@ MonoBehaviour:
     m_Bits: 4294967295
   footstepVolume: 0.9
   cheated: 0
+--- !u!114 &1599387521232433348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7981871908806202865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fca954ff2270324bb2529f6d3b41ca5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WindReceiver3D
+  enterBlend: 10
+  exitBlend: 10
+  ignoreVertical: 0
+  useFixedUpdateForRigidbody: 1
 --- !u!1 &7996808512606648843
 GameObject:
   m_ObjectHideFlags: 0
